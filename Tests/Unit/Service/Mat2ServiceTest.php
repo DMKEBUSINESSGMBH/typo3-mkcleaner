@@ -84,7 +84,7 @@ class Mat2ServiceTest extends UnitTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => dirname(__FILE__).'/../../Fixtures/mat2 --inplace --lightweight /var/www/html/packages/mkcleaner/Tests/Unit/Service/../../Fixtures/Files/dummy.txt',
+                    'cmd' => dirname(__FILE__).'/../../Fixtures/mat2 --inplace --lightweight '.realpath(dirname(__FILE__).'/../../Fixtures/Files/dummy.txt'),
                     'output' => ['mat2 executed'],
                     'returnValue' => 123,
                 ]
