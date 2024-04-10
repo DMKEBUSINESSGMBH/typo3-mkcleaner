@@ -60,7 +60,7 @@ class ResourceStorageTest extends UnitTestCase
         $mat2Service
             ->expects(self::once())
             ->method('cleanupFile')
-            ->with('/var/www/html/packages/mkcleaner/.Build/Web/test.txt');
+            ->with(PATH_site.'test.txt');
         GeneralUtility::setSingletonInstance(Mat2Service::class, $mat2Service);
 
         GeneralUtility::makeInstance(ResourceStorage::class)->cleanupFile($file);
