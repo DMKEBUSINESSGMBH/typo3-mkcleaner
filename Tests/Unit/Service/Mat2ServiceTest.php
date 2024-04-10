@@ -128,7 +128,7 @@ class Mat2ServiceTest extends UnitTestCase
                 [
                     'exec',
                     [
-                        'cmd' => dirname(__FILE__).'/../../Fixtures/mat2 --inplace --lightweight /var/www/html/packages/mkcleaner/Tests/Fixtures/Files/dummy.txt',
+                        'cmd' => dirname(__FILE__).'/../../Fixtures/mat2 --inplace --lightweight '.realpath(dirname(__FILE__).'/../../Fixtures/Files/dummy.txt'),
                         'output' => ['mat2 executed'],
                         'returnValue' => 123,
                     ],
@@ -136,7 +136,7 @@ class Mat2ServiceTest extends UnitTestCase
                 [
                     'exec',
                     [
-                        'cmd' => dirname(__FILE__).'/../../Fixtures/mat2 --inplace --lightweight /var/www/html/packages/mkcleaner/Tests/Fixtures/mat2',
+                        'cmd' => dirname(__FILE__).'/../../Fixtures/mat2 --inplace --lightweight '.realpath(dirname(__FILE__).'/../../Fixtures/mat2'),
                         'output' => ['mat2 executed'],
                         'returnValue' => 123,
                     ],
