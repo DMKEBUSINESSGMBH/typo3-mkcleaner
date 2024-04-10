@@ -4,7 +4,7 @@ MK Cleaner
 ![TYPO3 compatibility](https://img.shields.io/badge/TYPO3-8.7-orange?maxAge=3600&style=flat-square&logo=typo3)
 [![Latest Stable Version](https://img.shields.io/packagist/v/dmk/mkcleaner.svg?maxAge=3600&style=flat-square&logo=composer)](https://packagist.org/packages/dmk/mkcleaner)
 [![Total Downloads](https://img.shields.io/packagist/dt/dmk/mkcleaner.svg?maxAge=3600&style=flat-square)](https://packagist.org/packages/dmk/mkcleaner)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/DMKEBUSINESSGMBH/typo3-mkcleaner/PHP-CI.svg?maxAge=3600&style=flat-square&logo=github-actions)](https://github.com/DMKEBUSINESSGMBH/typo3-mkcleaner/actions?query=workflow%3APHP-CI)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/DMKEBUSINESSGMBH/typo3-mkcleaner/.github/workflows/phpci.yml?maxAge=3600&style=flat-square&logo=github-actions)](https://github.com/DMKEBUSINESSGMBH/typo3-mkcleaner/actions?query=workflow%3APHP-CI)
 [![License](https://img.shields.io/packagist/l/dmk/mkcleaner.svg?maxAge=3600&style=flat-square&logo=gnu)](https://packagist.org/packages/dmk/mkcleaner)
 
 What does it do?
