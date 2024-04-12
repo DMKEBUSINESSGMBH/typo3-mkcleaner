@@ -98,7 +98,7 @@ class Mat2CleanerTest extends UnitTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder.'/mat2 --inplace --lightweight testPath',
+                    'cmd' => $this->fixturesFolder.'/mat2 --inplace --lightweight \'testPath\'',
                     'output' => ['mat2 executed'],
                     'returnValue' => 123,
                 ]

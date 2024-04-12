@@ -28,6 +28,7 @@
 namespace DMK\Mkcleaner\Cleaner;
 
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Utility\CommandUtility;
 
 /**
  * Class ExiftoolAndQpdfCleaner.
@@ -41,10 +42,12 @@ class ExiftoolAndQpdfCleaner extends AbstractCommandCleaner
     public function cleanupFile(FileInterface $file): bool
     {
         $filePath = $file->getForLocalProcessing(false);
-        $filePathIntermediate = $filePath.'_intermediate';
+        $rawFilePathIntermediate = $filePath.'_intermediate';
+        $filePath = CommandUtility::escapeShellArgument($filePath);
+        $filePathIntermediate = CommandUtility::escapeShellArgument($rawFilePathIntermediate);
         $this->executeCommand('exiftool', '-all:all= '.$filePath.' -o '.$filePathIntermediate);
         $this->executeCommand('qpdf', '--linearize '.$filePathIntermediate.' '.$filePath);
-        unlink($filePathIntermediate);
+        unlink($rawFilePathIntermediate);
 
         return true;
     }

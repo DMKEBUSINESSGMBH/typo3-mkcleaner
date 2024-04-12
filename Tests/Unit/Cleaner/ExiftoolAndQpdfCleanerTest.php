@@ -102,7 +102,7 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
                 [
                     'exec',
                     [
-                        'cmd' => $this->fixturesFolder.'/exiftool -all:all= '.$this->fixturesFolder.'/testPath.txt -o '.$this->fixturesFolder.'/testPath.txt_intermediate',
+                        'cmd' => $this->fixturesFolder.'/exiftool -all:all= \''.$this->fixturesFolder.'/testPath.txt\' -o \''.$this->fixturesFolder.'/testPath.txt_intermediate\'',
                         'output' => ['exiftool executed'],
                         'returnValue' => 123,
                     ],
@@ -110,7 +110,7 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
                 [
                     'exec',
                     [
-                        'cmd' => $this->fixturesFolder.'/qpdf --linearize '.$this->fixturesFolder.'/testPath.txt_intermediate '.$this->fixturesFolder.'/testPath.txt',
+                        'cmd' => $this->fixturesFolder.'/qpdf --linearize \''.$this->fixturesFolder.'/testPath.txt_intermediate\' \''.$this->fixturesFolder.'/testPath.txt\'',
                         'output' => ['qpdf executed'],
                         'returnValue' => 123,
                     ],

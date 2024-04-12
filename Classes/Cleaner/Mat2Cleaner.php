@@ -28,6 +28,7 @@
 namespace DMK\Mkcleaner\Cleaner;
 
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Utility\CommandUtility;
 
 /**
  * Class Mat2Cleaner.
@@ -40,7 +41,9 @@ class Mat2Cleaner extends AbstractCommandCleaner
 {
     public function cleanupFile(FileInterface $file): bool
     {
-        return $this->executeCommand('mat2', '--inplace --lightweight '.$file->getForLocalProcessing(false));
+        return $this->executeCommand(
+            'mat2', '--inplace --lightweight '.CommandUtility::escapeShellArgument($file->getForLocalProcessing(false))
+        );
     }
 
     public function canHandleFile(FileInterface $file): bool
