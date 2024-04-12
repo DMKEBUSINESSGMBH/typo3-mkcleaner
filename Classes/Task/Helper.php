@@ -27,61 +27,45 @@
 
 namespace DMK\Mkcleaner\Task;
 
-use DMK\Mkcleaner\Service\Mat2Service;
+use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
- * Class CleanupTask.
+ * Class CleanerTaskFieldProvider.
  *
  * @author  Hannes Bochmann
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class CleanupTask extends AbstractTask
+class Helper
 {
     /**
-     * @var string
+     * @var ResourceFactory
      */
-    protected $sourcepaths = '';
+    protected $resourceFactory;
 
     /**
-     * @return void
+     * @todo use DI with newer TYPO3 versions
      */
-    public function setSourcepaths(string $sourcepaths)
+    public function __construct(ResourceFactory $resourceFactory = null)
     {
-        $this->sourcepaths = $sourcepaths;
-    }
-
-    public function getSourcepaths(): string
-    {
-        return $this->sourcepaths;
-    }
-
-    public function getSourcepathsAsArray(): array
-    {
-        return GeneralUtility::trimExplode(LF, $this->getSourcepaths(), true);
+        $this->resourceFactory = $resourceFactory ?? GeneralUtility::makeInstance(ResourceFactory::class);
     }
 
     /**
-     * @return bool
+     * @param string $foldersToClean line break separated list of combined folder identifiers
+     *
+     * @return Folder[]
      */
-    public function execute()
+    public function getFolderObjectsFromCombinedIdentifiers(string $foldersToClean): array
     {
-        $mat2Service = GeneralUtility::makeInstance(Mat2Service::class);
-        foreach ($this->getSourcepathsAsArray() as $cleanupPath) {
-            $mat2Service->cleanupFolder($cleanupPath);
+        $foldersToClean = GeneralUtility::trimExplode(LF, $foldersToClean, true);
+        $folderObjects = [];
+        foreach ($foldersToClean as $combinedFolderIdentifier) {
+            $folderObjects[] = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($combinedFolderIdentifier);
         }
 
-        return true;
-    }
-
-    /**
-     * @SuppressWarnings(PHPMD.Superglobals)
-     */
-    public function getAdditionalInformation(string $info = ''): string
-    {
-        return $info.CRLF.$GLOBALS['LANG']->sL('LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanupTask.sourcepaths').
-            ': '.CRLF.$this->getSourcepaths();
+        return $folderObjects;
     }
 }

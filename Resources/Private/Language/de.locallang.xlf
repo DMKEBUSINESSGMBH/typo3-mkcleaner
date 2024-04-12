@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.0" xmlns:t3="http://typo3.org/schemas/xliff">
-	<file t3:id="1415814984" source-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:37Z" product-name="mkcleaner">
+	<file t3:id="1415814984" target-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:37Z" product-name="mkcleaner">
 		<header/>
 		<body>
 			<trans-unit id="label.CleanerTask.title">
-				<source>Clean files</source>
+				<target>Dateien bereinigen</target>
 			</trans-unit>
 			<trans-unit id="label.CleanerTask.description">
-				<source>Removes all metadata</source>
+				<target>Entfernt alle Metadaten</target>
 			</trans-unit>
 			<trans-unit id="label.CleanerTask.foldersToClean">
-				<source>Folders that should be cleaned</source>
+				<target>Ordner, die bereinigt werden sollen</target>
 			</trans-unit>
 			<trans-unit id="message.CleanerTask.foldersToClean.invalid">
-				<source>The paths are empty or not readable. Error: %s</source>
+				<target>Die eingegebenen Pfade sind leer oder nicht alle lesbar. Fehlermeldung: %s</target>
 			</trans-unit>
 		</body>
 	</file>

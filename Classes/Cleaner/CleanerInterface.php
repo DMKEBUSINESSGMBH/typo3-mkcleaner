@@ -25,26 +25,20 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mkcleaner\SignalSlot;
+namespace DMK\Mkcleaner\Cleaner;
 
-use DMK\Mkcleaner\Service\CleanerService;
 use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class ResourceStorage.
+ * Class CleanerInterface.
  *
  * @author  Hannes Bochmann
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class ResourceStorage
+interface CleanerInterface
 {
-    /**
-     * @return void
-     */
-    public function cleanupFile(FileInterface $file)
-    {
-        GeneralUtility::makeInstance(CleanerService::class)->cleanupFile($file);
-    }
+    public function cleanupFile(FileInterface $file): bool;
+
+    public function canHandleFile(FileInterface $file): bool;
 }

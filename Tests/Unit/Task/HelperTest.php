@@ -25,40 +25,40 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mkcleaner\Tests\SignalSlot;
+namespace DMK\Mkcleaner\Tests\Task;
 
-use DMK\Mkcleaner\Service\CleanerService;
-use DMK\Mkcleaner\SignalSlot\ResourceStorage;
+use DMK\Mkcleaner\Task\Helper;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
-use TYPO3\CMS\Core\Resource\File;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 
 /**
- * Class ResourceStorageTest.
+ * Class HelperTest.
  *
  * @author  Hannes Bochmann
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class ResourceStorageTest extends UnitTestCase
+class HelperTest extends UnitTestCase
 {
     /**
      * @test
      */
-    public function cleanupFile()
+    public function getFolderObjectsFromCombinedIdentifiers()
     {
-        $file = $this->getMockBuilder(File::class)
+        $resourceFactory = $this->getMockBuilder(ResourceFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $cleanerService = $this->getMockBuilder(CleanerService::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $cleanerService
-            ->expects(self::once())
-            ->method('cleanupFile')
-            ->with($file);
-        GeneralUtility::setSingletonInstance(CleanerService::class, $cleanerService);
+        $firstFolder = $this->getMockBuilder(Folder::class)->disableOriginalConstructor()->getMock();
+        $secondFolder = $this->getMockBuilder(Folder::class)->disableOriginalConstructor()->getMock();
+        $resourceFactory
+            ->expects(self::exactly(2))
+            ->method('getFolderObjectFromCombinedIdentifier')
+            ->withConsecutive(['first'], ['second'])
+            ->willReturnOnConsecutiveCalls($firstFolder, $secondFolder);
 
-        GeneralUtility::makeInstance(ResourceStorage::class)->cleanupFile($file);
+        $folders = (new Helper($resourceFactory))->getFolderObjectsFromCombinedIdentifiers('first'.CRLF.'second');
+        self::assertCount(2, $folders);
+        self::assertSame($firstFolder, $folders[0]);
+        self::assertSame($secondFolder, $folders[1]);
     }
 }

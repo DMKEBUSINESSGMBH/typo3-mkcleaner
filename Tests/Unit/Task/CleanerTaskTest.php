@@ -27,23 +27,25 @@
 
 namespace DMK\Mkcleaner\Tests\Task;
 
-use DMK\Mkcleaner\Service\Mat2Service;
-use DMK\Mkcleaner\Task\CleanupTask;
+use DMK\Mkcleaner\Service\CleanerService;
+use DMK\Mkcleaner\Task\CleanerTask;
+use DMK\Mkcleaner\Task\Helper;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Lang\LanguageService;
 
 /**
- * Class CleanupTaskTest.
+ * Class CleanerTaskTest.
  *
  * @author  Hannes Bochmann
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class CleanupTaskTest extends UnitTestCase
+class CleanerTaskTest extends UnitTestCase
 {
     /**
-     * @var CleanupTask|\PHPUnit\Framework\MockObject\MockObject
+     * @var CleanerTask|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $task;
 
@@ -52,7 +54,7 @@ class CleanupTaskTest extends UnitTestCase
         parent::setUp();
 
         // We need a mock to disable the constructor
-        $this->task = $this->getMockBuilder(CleanupTask::class)
+        $this->task = $this->getMockBuilder(CleanerTask::class)
             // dummy method
             ->setMethods(['getTaskUid'])
             ->disableOriginalConstructor()
@@ -68,10 +70,10 @@ class CleanupTaskTest extends UnitTestCase
         $GLOBALS['LANG']
             ->expects(self::once())
             ->method('sL')
-            ->with('LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanupTask.sourcepaths')
+            ->with('LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanerTask.foldersToClean')
             ->willReturn('label');
 
-        $this->task->setSourcepaths('paths');
+        $this->task->setFoldersToClean('paths');
         self::assertSame(
             'test'.CRLF.'label'.': '.CRLF.'paths',
             $this->task->getAdditionalInformation('test')
@@ -83,16 +85,28 @@ class CleanupTaskTest extends UnitTestCase
      */
     public function execute()
     {
-        $mat2Service = $this->getMockBuilder(Mat2Service::class)
+        $helper = $this->getMockBuilder(Helper::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $mat2Service
+        $firstFolder = $this->getMockBuilder(Folder::class)->disableOriginalConstructor()->getMock();
+        $secondFolder = $this->getMockBuilder(Folder::class)->disableOriginalConstructor()->getMock();
+        $helper
+            ->expects(self::once())
+            ->method('getFolderObjectsFromCombinedIdentifiers')
+            ->with('path1'.CRLF.'path2')
+            ->willReturn([$firstFolder, $secondFolder]);
+        GeneralUtility::addInstance(Helper::class, $helper);
+
+        $cleanerService = $this->getMockBuilder(CleanerService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $cleanerService
             ->expects(self::exactly(2))
             ->method('cleanupFolder')
-            ->withConsecutive(['path1'], ['path2']);
-        GeneralUtility::setSingletonInstance(Mat2Service::class, $mat2Service);
+            ->withConsecutive([$firstFolder], [$secondFolder]);
+        GeneralUtility::setSingletonInstance(CleanerService::class, $cleanerService);
 
-        $this->task->setSourcepaths('path1'.CRLF.'path2');
+        $this->task->setFoldersToClean('path1'.CRLF.'path2');
         self::assertTrue($this->task->execute());
     }
 }

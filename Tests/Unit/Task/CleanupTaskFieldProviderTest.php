@@ -27,50 +27,59 @@
 
 namespace DMK\Mkcleaner\Tests\Task;
 
-use DMK\Mkcleaner\Task\CleanupTask;
-use DMK\Mkcleaner\Task\CleanupTaskFieldProvider;
+use DMK\Mkcleaner\Task\CleanerTask;
+use DMK\Mkcleaner\Task\CleanerTaskFieldProvider;
+use DMK\Mkcleaner\Task\Helper;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Lang\LanguageService;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 
 /**
- * Class CleanupTaskTest.
+ * Class CleanerTaskTest.
  *
  * @author  Hannes Bochmann
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class CleanupTaskFieldProviderTest extends UnitTestCase
+class CleanerTaskFieldProviderTest extends UnitTestCase
 {
     /**
      * @test
      */
     public function saveAdditionalFields()
     {
-        $task = $this->getMockBuilder(CleanupTask::class)
-            ->setMethods(['setSourcepaths'])
+        $task = $this->getMockBuilder(CleanerTask::class)
+            ->setMethods(['setFoldersToClean'])
             ->disableOriginalConstructor()
             ->getMock();
         $task
             ->expects(self::once())
-            ->method('setSourcepaths')
+            ->method('setFoldersToClean')
             ->with('testPath');
-        $provider = new CleanupTaskFieldProvider();
-        $provider->saveAdditionalFields(['sourcepaths' => 'testPath'], $task);
+        $provider = new CleanerTaskFieldProvider();
+        $provider->saveAdditionalFields(['foldersToClean' => 'testPath'], $task);
     }
 
     /**
      * @test
-     * @dataProvider validateAdditionalFieldsDataProvider
      */
-    public function validateAdditionalFieldsWithInvalidData(array $submittedData)
+    public function validateAdditionalFieldsWithInvalidData()
     {
         $GLOBALS['LANG'] = $this->getAccessibleMock(LanguageService::class, ['sL'], [], '', false);
         $GLOBALS['LANG']
             ->expects(self::once())
             ->method('sL')
-            ->with('LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:message.CleanupTask.sourcepaths.invalid')
+            ->with('LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:message.CleanerTask.foldersToClean.invalid')
             ->willReturn('message');
+
+        $helper = $this->getMockBuilder(Helper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helper
+            ->expects(self::once())
+            ->method('getFolderObjectsFromCombinedIdentifiers')
+            ->with('/')
+            ->willThrowException(new \Exception('folder not found'));
 
         $moduleController = $this->getMockBuilder(SchedulerModuleController::class)
             ->disableOriginalConstructor()
@@ -79,18 +88,9 @@ class CleanupTaskFieldProviderTest extends UnitTestCase
             ->expects(self::once())
             ->method('addMessage')
             ->with('message', 2);
-        $provider = new CleanupTaskFieldProvider();
+        $provider = new CleanerTaskFieldProvider($helper);
+        $submittedData = ['foldersToClean' => '/'];
         self::assertFalse($provider->validateAdditionalFields($submittedData, $moduleController));
-    }
-
-    public function validateAdditionalFieldsDataProvider(): array
-    {
-        return [
-            [[]],
-            [['sourcepaths' => '']],
-            [['sourcepaths' => 'unknown']],
-            [['sourcepaths' => 'unknown'.LF.'/']],
-        ];
     }
 
     /**
@@ -104,8 +104,11 @@ class CleanupTaskFieldProviderTest extends UnitTestCase
         $moduleController
             ->expects(self::never())
             ->method('addMessage');
-        $provider = new CleanupTaskFieldProvider();
-        $submittedData = ['sourcepaths' => '/'];
+        $helper = $this->getMockBuilder(Helper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $provider = new CleanerTaskFieldProvider($helper);
+        $submittedData = ['foldersToClean' => '/'];
         self::assertTrue($provider->validateAdditionalFields($submittedData, $moduleController));
     }
 
@@ -117,19 +120,19 @@ class CleanupTaskFieldProviderTest extends UnitTestCase
         $moduleController = $this->getMockBuilder(SchedulerModuleController::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $task = $this->getMockBuilder(CleanupTask::class)
-            ->setMethods(['getSourcepaths'])
+        $task = $this->getMockBuilder(CleanerTask::class)
+            ->setMethods(['getFoldersToClean'])
             ->disableOriginalConstructor()
             ->getMock();
-        $provider = new CleanupTaskFieldProvider();
+        $provider = new CleanerTaskFieldProvider();
         $taskInfo = ['dummy' => 'test'];
         self::assertSame(
             [
-                'sourcepaths' => [
-                    'code' => '<textarea class="form-control" rows="5" cols="50" name="tx_scheduler[sourcepaths]" id="sourcepaths" ></textarea>',
-                    'label' => 'LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanupTask.sourcepaths',
-                    'cshKey' => '',
-                    'cshLabel' => '',
+                'foldersToClean' => [
+                    'code' => '<textarea class="form-control" rows="5" cols="50" name="tx_scheduler[foldersToClean]" id="foldersToClean" ></textarea>',
+                    'label' => 'LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanerTask.foldersToClean',
+                    'cshKey' => 'csh_mkcleaner',
+                    'cshLabel' => 'label.CleanerTask.foldersToClean.csh',
                 ],
             ],
             $provider->getAdditionalFields($taskInfo, $task, $moduleController)
@@ -146,27 +149,27 @@ class CleanupTaskFieldProviderTest extends UnitTestCase
             ->disableOriginalConstructor()
             ->getMock();
         $moduleController->CMD = 'edit';
-        $task = $this->getMockBuilder(CleanupTask::class)
-            ->setMethods(['getSourcepaths'])
+        $task = $this->getMockBuilder(CleanerTask::class)
+            ->setMethods(['getFoldersToClean'])
             ->disableOriginalConstructor()
             ->getMock();
         $task
             ->expects(self::once())
-            ->method('getSourcepaths')
+            ->method('getFoldersToClean')
             ->willReturn('<test>');
-        $provider = new CleanupTaskFieldProvider();
+        $provider = new CleanerTaskFieldProvider();
         $taskInfo = ['dummy' => 'test'];
         self::assertSame(
             [
-                'sourcepaths' => [
-                    'code' => '<textarea class="form-control" rows="5" cols="50" name="tx_scheduler[sourcepaths]" id="sourcepaths" >&lt;test&gt;</textarea>',
-                    'label' => 'LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanupTask.sourcepaths',
-                    'cshKey' => '',
-                    'cshLabel' => '',
+                'foldersToClean' => [
+                    'code' => '<textarea class="form-control" rows="5" cols="50" name="tx_scheduler[foldersToClean]" id="foldersToClean" >&lt;test&gt;</textarea>',
+                    'label' => 'LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanerTask.foldersToClean',
+                    'cshKey' => 'csh_mkcleaner',
+                    'cshLabel' => 'label.CleanerTask.foldersToClean.csh',
                 ],
             ],
             $provider->getAdditionalFields($taskInfo, $task, $moduleController)
         );
-        self::assertSame(['dummy' => 'test', 'sourcepaths' => '<test>'], $taskInfo);
+        self::assertSame(['dummy' => 'test', 'foldersToClean' => '<test>'], $taskInfo);
     }
 }

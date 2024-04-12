@@ -25,7 +25,7 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mkcleaner\Service;
+namespace DMK\Mkcleaner\Cleaner;
 
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
@@ -34,65 +34,30 @@ use TYPO3\CMS\Core\Utility\CommandUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class Mat2Service.
+ * Class AbstractCommandCleaner.
  *
  * @author  Hannes Bochmann
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class Mat2Service implements SingletonInterface
+abstract class AbstractCommandCleaner implements SingletonInterface, CleanerInterface
 {
     /**
      * @var Logger
      */
     protected $logger;
 
+    /**
+     * @todo use DI in newer TYPO3 versions.
+     */
     public function __construct()
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
     }
 
-    public function cleanupFolder(string $path): bool
+    protected function executeCommand(string $command, string $parameters): bool
     {
-        if (!is_dir($path)) {
-            $this->logger->error('failed: '.$path.' ist not a directory');
-
-            return false;
-        }
-        if (!is_readable($path)) {
-            $this->logger->error('failed: '.$path.' ist not readable');
-
-            return false;
-        }
-        $resource = opendir($path);
-        if (!$resource) {
-            return false;
-        }
-        while (($file = readdir($resource)) !== false) {
-            if ('.' == $file or '..' == $file) {
-                continue;
-            }
-            $file = realpath($path.DIRECTORY_SEPARATOR.$file);
-
-            if (is_dir($file)) {
-                $this->cleanupFolder($file);
-                continue;
-            }
-
-            $this->cleanupFile($file);
-        }
-        closedir($resource);
-
-        return true;
-    }
-
-    public function cleanupFile(string $path): bool
-    {
-        if (!is_file($path)) {
-            return false;
-        }
-
-        $command = CommandUtility::getCommand('mat2').' --inplace --lightweight '.$path;
+        $command = CommandUtility::getCommand($command).' '.$parameters;
         $output = $returnValue = '';
         CommandUtility::exec($command, $output, $returnValue);
         $this->logger->info('exec', ['cmd' => $command, 'output' => $output, 'returnValue' => $returnValue]);

@@ -25,26 +25,26 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mkcleaner\SignalSlot;
+namespace DMK\Mkcleaner\Cleaner;
 
-use DMK\Mkcleaner\Service\CleanerService;
 use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class ResourceStorage.
+ * Class Mat2Cleaner.
  *
  * @author  Hannes Bochmann
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class ResourceStorage
+class Mat2Cleaner extends AbstractCommandCleaner
 {
-    /**
-     * @return void
-     */
-    public function cleanupFile(FileInterface $file)
+    public function cleanupFile(FileInterface $file): bool
     {
-        GeneralUtility::makeInstance(CleanerService::class)->cleanupFile($file);
+        return $this->executeCommand('mat2', '--inplace --lightweight '.$file->getForLocalProcessing(false));
+    }
+
+    public function canHandleFile(FileInterface $file): bool
+    {
+        return 'image/svg+xml' != $file->getMimeType() && 'application/pdf' != $file->getMimeType();
     }
 }

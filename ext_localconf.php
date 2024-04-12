@@ -43,11 +43,14 @@ call_user_func(
             \DMK\Mkcleaner\SignalSlot\ResourceStorage::class,
             'cleanupFile'
         );
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\DMK\Mkcleaner\Task\CleanupTask::class] = [
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\DMK\Mkcleaner\Task\CleanerTask::class] = [
             'extension' => 'mkcleaner',
-            'title' => 'Clean files',
-            'description' => 'By removing all metadata',
-            'additionalFields' => \DMK\Mkcleaner\Task\CleanupTaskFieldProvider::class,
+            'title' => 'LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanerTask.title',
+            'description' => 'LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanerTask.description',
+            'additionalFields' => \DMK\Mkcleaner\Task\CleanerTaskFieldProvider::class,
         ];
+
+        \DMK\Mkcleaner\Cleaner\Registry::registerCleaner(\DMK\Mkcleaner\Cleaner\Mat2Cleaner::class, 50);
+        \DMK\Mkcleaner\Cleaner\Registry::registerCleaner(\DMK\Mkcleaner\Cleaner\ExiftoolAndQpdfCleaner::class, 75);
     }
 );

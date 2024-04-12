@@ -25,26 +25,41 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mkcleaner\SignalSlot;
+namespace DMK\Mkcleaner\Service;
 
-use DMK\Mkcleaner\Service\CleanerService;
+use DMK\Mkcleaner\Cleaner\Registry;
 use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\SingletonInterface;
 
 /**
- * Class ResourceStorage.
+ * Class Mat2Service.
  *
  * @author  Hannes Bochmann
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class ResourceStorage
+class CleanerService implements SingletonInterface
 {
+    /**
+     * @return void
+     */
+    public function cleanupFolder(Folder $folder)
+    {
+        foreach ($folder->getFiles(0, 0, Folder::FILTER_MODE_USE_OWN_AND_STORAGE_FILTERS, true) as $file) {
+            $this->cleanupFile($file);
+        }
+    }
+
     /**
      * @return void
      */
     public function cleanupFile(FileInterface $file)
     {
-        GeneralUtility::makeInstance(CleanerService::class)->cleanupFile($file);
+        foreach (Registry::getRegisteredCleaners() as $cleaner) {
+            if ($cleaner->canHandleFile($file)) {
+                $cleaner->cleanupFile($file);
+            }
+        }
     }
 }

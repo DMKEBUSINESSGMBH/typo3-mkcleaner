@@ -1,0 +1,5 @@
+#!/usr/bin/env php
+<?php
+
+echo 'qpdf executed';
+exit(123);

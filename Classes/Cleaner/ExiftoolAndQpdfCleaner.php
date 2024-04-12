@@ -25,26 +25,32 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mkcleaner\SignalSlot;
+namespace DMK\Mkcleaner\Cleaner;
 
-use DMK\Mkcleaner\Service\CleanerService;
 use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class ResourceStorage.
+ * Class ExiftoolAndQpdfCleaner.
  *
  * @author  Hannes Bochmann
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class ResourceStorage
+class ExiftoolAndQpdfCleaner extends AbstractCommandCleaner
 {
-    /**
-     * @return void
-     */
-    public function cleanupFile(FileInterface $file)
+    public function cleanupFile(FileInterface $file): bool
     {
-        GeneralUtility::makeInstance(CleanerService::class)->cleanupFile($file);
+        $filePath = $file->getForLocalProcessing(false);
+        $filePathIntermediate = $filePath.'_intermediate';
+        $this->executeCommand('exiftool', '-all:all= '.$filePath.' -o '.$filePathIntermediate);
+        $this->executeCommand('qpdf', '--linearize '.$filePathIntermediate.' '.$filePath);
+        unlink($filePathIntermediate);
+
+        return true;
+    }
+
+    public function canHandleFile(FileInterface $file): bool
+    {
+        return 'application/pdf' == $file->getMimeType();
     }
 }

@@ -25,26 +25,12 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mkcleaner\SignalSlot;
+defined('TYPO3_MODE') or exit();
 
-use DMK\Mkcleaner\Service\CleanerService;
-use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
-/**
- * Class ResourceStorage.
- *
- * @author  Hannes Bochmann
- * @license http://www.gnu.org/licenses/lgpl.html
- *          GNU Lesser General Public License, version 3 or later
- */
-class ResourceStorage
-{
-    /**
-     * @return void
-     */
-    public function cleanupFile(FileInterface $file)
-    {
-        GeneralUtility::makeInstance(CleanerService::class)->cleanupFile($file);
-    }
+if (TYPO3_MODE === 'BE') {
+    // Add context sensitive help (csh) to the scheduler module
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr(
+        'csh_mkcleaner',
+        'EXT:mkcleaner/Resources/Private/Language/locallang_csh.xlf'
+    );
 }
