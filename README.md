@@ -41,3 +41,8 @@ For example pdf files sometimes loose all links or svg files have changed conten
 be used.
 Therefore pdf files are cleaned with exiftool and qpdf instead of mat2 and svg files are omitted
 completely. Please take care of having svg files without metadata yourself.
+
+Changelog
+----------------
+v8.0.1: resolve symlinks
+v8.0.0: initial release
