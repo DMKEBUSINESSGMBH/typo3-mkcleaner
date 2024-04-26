@@ -41,7 +41,7 @@ class ExiftoolAndQpdfCleaner extends AbstractCommandCleaner
 {
     public function cleanupFile(FileInterface $file): bool
     {
-        $filePath = $file->getForLocalProcessing(false);
+        $filePath = realpath($file->getForLocalProcessing(false));
         $rawFilePathIntermediate = $filePath.'_intermediate';
         $filePath = CommandUtility::escapeShellArgument($filePath);
         $filePathIntermediate = CommandUtility::escapeShellArgument($rawFilePathIntermediate);

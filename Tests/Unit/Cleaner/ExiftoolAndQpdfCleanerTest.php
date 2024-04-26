@@ -77,7 +77,7 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
         GeneralUtility::setSingletonInstance(LogManager::class, $logManager);
         $this->exiftoolAndQpdfCleaner = new ExiftoolAndQpdfCleaner();
 
-        $this->fixturesFolder = dirname(__FILE__).'/../../Fixtures';
+        $this->fixturesFolder = realpath(dirname(__FILE__).'/../../Fixtures');
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['binSetup'] = 'mat2='.$this->fixturesFolder.'/mat2,'.
             'exiftool='.$this->fixturesFolder.'/exiftool,'.
             'qpdf='.$this->fixturesFolder.'/qpdf';
@@ -88,13 +88,13 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
      */
     public function cleanupFile()
     {
-        touch($this->fixturesFolder.'/testPath.txt_intermediate');
+        touch($this->fixturesFolder.'/testPath_intermediate');
         $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
         $file
             ->expects(self::any())
             ->method('getForLocalProcessing')
             ->with(false)
-            ->willReturn($this->fixturesFolder.'/testPath.txt');
+            ->willReturn($this->fixturesFolder.'/testPathSymlink');
         $this->logger
             ->expects(self::exactly(2))
             ->method('info')
@@ -102,7 +102,7 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
                 [
                     'exec',
                     [
-                        'cmd' => $this->fixturesFolder.'/exiftool -all:all= \''.$this->fixturesFolder.'/testPath.txt\' -o \''.$this->fixturesFolder.'/testPath.txt_intermediate\'',
+                        'cmd' => $this->fixturesFolder.'/exiftool -all:all= \''.$this->fixturesFolder.'/testPath\' -o \''.$this->fixturesFolder.'/testPath_intermediate\'',
                         'output' => ['exiftool executed'],
                         'returnValue' => 123,
                     ],
@@ -110,14 +110,14 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
                 [
                     'exec',
                     [
-                        'cmd' => $this->fixturesFolder.'/qpdf --linearize \''.$this->fixturesFolder.'/testPath.txt_intermediate\' \''.$this->fixturesFolder.'/testPath.txt\'',
+                        'cmd' => $this->fixturesFolder.'/qpdf --linearize \''.$this->fixturesFolder.'/testPath_intermediate\' \''.$this->fixturesFolder.'/testPath\'',
                         'output' => ['qpdf executed'],
                         'returnValue' => 123,
                     ],
                 ]
             );
         self::assertTrue($this->exiftoolAndQpdfCleaner->cleanupFile($file));
-        self::assertFileNotExists($this->fixturesFolder.'/testPath.txt_intermediate');
+        self::assertFileNotExists($this->fixturesFolder.'/testPath_intermediate');
     }
 
     /**

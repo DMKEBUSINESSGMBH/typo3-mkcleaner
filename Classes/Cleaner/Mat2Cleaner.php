@@ -42,7 +42,8 @@ class Mat2Cleaner extends AbstractCommandCleaner
     public function cleanupFile(FileInterface $file): bool
     {
         return $this->executeCommand(
-            'mat2', '--inplace --lightweight '.CommandUtility::escapeShellArgument($file->getForLocalProcessing(false))
+            'mat2', '--inplace --lightweight '.
+            CommandUtility::escapeShellArgument(realpath($file->getForLocalProcessing(false)))
         );
     }
 

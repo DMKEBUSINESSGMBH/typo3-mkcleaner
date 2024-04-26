@@ -76,7 +76,7 @@ class Mat2CleanerTest extends UnitTestCase
             ->willReturn($this->logger);
         GeneralUtility::setSingletonInstance(LogManager::class, $logManager);
         $this->mat2Cleaner = new Mat2Cleaner();
-        $this->fixturesFolder = dirname(__FILE__).'/../../Fixtures';
+        $this->fixturesFolder = realpath(dirname(__FILE__).'/../../Fixtures');
 
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['binSetup'] = 'mat2='.$this->fixturesFolder.'/mat2';
     }
@@ -91,14 +91,14 @@ class Mat2CleanerTest extends UnitTestCase
             ->expects(self::any())
             ->method('getForLocalProcessing')
             ->with(false)
-            ->willReturn('testPath');
+            ->willReturn($this->fixturesFolder.'/testPathSymlink');
         $this->logger
             ->expects(self::once())
             ->method('info')
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder.'/mat2 --inplace --lightweight \'testPath\'',
+                    'cmd' => $this->fixturesFolder.'/mat2 --inplace --lightweight \''.$this->fixturesFolder.'/testPath\'',
                     'output' => ['mat2 executed'],
                     'returnValue' => 123,
                 ]
