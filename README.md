@@ -44,5 +44,6 @@ completely. Please take care of having svg files without metadata yourself.
 
 Changelog
 ----------------
+v8.0.2: add some error handling
 v8.0.1: resolve symlinks
 v8.0.0: initial release
