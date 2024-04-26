@@ -77,8 +77,16 @@ class Mat2CleanerTest extends UnitTestCase
         GeneralUtility::setSingletonInstance(LogManager::class, $logManager);
         $this->mat2Cleaner = new Mat2Cleaner();
         $this->fixturesFolder = realpath(dirname(__FILE__).'/../../Fixtures');
-
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['binSetup'] = 'mat2='.$this->fixturesFolder.'/mat2';
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        if (file_exists($this->fixturesFolder.'/mat2_failure')) {
+            unlink($this->fixturesFolder.'/mat2_failure');
+        }
     }
 
     /**
@@ -93,8 +101,40 @@ class Mat2CleanerTest extends UnitTestCase
             ->with(false)
             ->willReturn($this->fixturesFolder.'/testPathSymlink');
         $this->logger
+            ->expects(self::never())
+            ->method('warning');
+        $this->logger
             ->expects(self::once())
             ->method('info')
+            ->with(
+                'exec',
+                [
+                    'cmd' => $this->fixturesFolder.'/mat2 --inplace --lightweight \''.$this->fixturesFolder.'/testPath\'',
+                    'output' => ['mat2 executed'],
+                    'returnValue' => 0,
+                ]
+            );
+        self::assertTrue($this->mat2Cleaner->cleanupFile($file));
+    }
+
+    /**
+     * @test
+     */
+    public function cleanupFileIfFailure()
+    {
+        touch($this->fixturesFolder.'/mat2_failure');
+        $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
+        $file
+            ->expects(self::any())
+            ->method('getForLocalProcessing')
+            ->with(false)
+            ->willReturn($this->fixturesFolder.'/testPathSymlink');
+        $this->logger
+            ->expects(self::never())
+            ->method('info');
+        $this->logger
+            ->expects(self::once())
+            ->method('warning')
             ->with(
                 'exec',
                 [
@@ -103,7 +143,7 @@ class Mat2CleanerTest extends UnitTestCase
                     'returnValue' => 123,
                 ]
             );
-        self::assertTrue($this->mat2Cleaner->cleanupFile($file));
+        self::assertFalse($this->mat2Cleaner->cleanupFile($file));
     }
 
     /**

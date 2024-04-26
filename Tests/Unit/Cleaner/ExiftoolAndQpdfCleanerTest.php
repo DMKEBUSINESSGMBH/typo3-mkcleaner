@@ -83,6 +83,21 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
             'qpdf='.$this->fixturesFolder.'/qpdf';
     }
 
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        if (file_exists($this->fixturesFolder.'/exiftool_failure')) {
+            unlink($this->fixturesFolder.'/exiftool_failure');
+        }
+        if (file_exists($this->fixturesFolder.'/qpdf_failure')) {
+            unlink($this->fixturesFolder.'/qpdf_failure');
+        }
+        if (file_exists($this->fixturesFolder.'/testPath_intermediate')) {
+            unlink($this->fixturesFolder.'/testPath_intermediate');
+        }
+    }
+
     /**
      * @test
      */
@@ -96,6 +111,9 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
             ->with(false)
             ->willReturn($this->fixturesFolder.'/testPathSymlink');
         $this->logger
+            ->expects(self::never())
+            ->method('warning');
+        $this->logger
             ->expects(self::exactly(2))
             ->method('info')
             ->withConsecutive(
@@ -104,7 +122,7 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
                     [
                         'cmd' => $this->fixturesFolder.'/exiftool -all:all= \''.$this->fixturesFolder.'/testPath\' -o \''.$this->fixturesFolder.'/testPath_intermediate\'',
                         'output' => ['exiftool executed'],
-                        'returnValue' => 123,
+                        'returnValue' => 0,
                     ],
                 ],
                 [
@@ -112,11 +130,111 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
                     [
                         'cmd' => $this->fixturesFolder.'/qpdf --linearize \''.$this->fixturesFolder.'/testPath_intermediate\' \''.$this->fixturesFolder.'/testPath\'',
                         'output' => ['qpdf executed'],
-                        'returnValue' => 123,
+                        'returnValue' => 0,
                     ],
                 ]
             );
         self::assertTrue($this->exiftoolAndQpdfCleaner->cleanupFile($file));
+        self::assertFileNotExists($this->fixturesFolder.'/testPath_intermediate');
+    }
+
+    /**
+     * @test
+     */
+    public function cleanupFileIfExiftoolFails()
+    {
+        touch($this->fixturesFolder.'/testPath_intermediate');
+        touch($this->fixturesFolder.'/exiftool_failure');
+        $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
+        $file
+            ->expects(self::any())
+            ->method('getForLocalProcessing')
+            ->with(false)
+            ->willReturn($this->fixturesFolder.'/testPathSymlink');
+        $this->logger
+            ->expects(self::never())
+            ->method('info');
+        $this->logger
+            ->expects(self::once())
+            ->method('warning')
+            ->with(
+                'exec',
+                [
+                    'cmd' => $this->fixturesFolder.'/exiftool -all:all= \''.$this->fixturesFolder.'/testPath\' -o \''.$this->fixturesFolder.'/testPath_intermediate\'',
+                    'output' => ['exiftool executed'],
+                    'returnValue' => 123,
+                ]
+            );
+        self::assertFalse($this->exiftoolAndQpdfCleaner->cleanupFile($file));
+        self::assertFileExists($this->fixturesFolder.'/testPath_intermediate');
+    }
+
+    /**
+     * @test
+     */
+    public function cleanupFileIfIntermediateFileNotCreated()
+    {
+        $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
+        $file
+            ->expects(self::any())
+            ->method('getForLocalProcessing')
+            ->with(false)
+            ->willReturn($this->fixturesFolder.'/testPathSymlink');
+        $this->logger
+            ->expects(self::never())
+            ->method('warning');
+        $this->logger
+            ->expects(self::once())
+            ->method('info')
+            ->with(
+                'exec',
+                [
+                    'cmd' => $this->fixturesFolder.'/exiftool -all:all= \''.$this->fixturesFolder.'/testPath\' -o \''.$this->fixturesFolder.'/testPath_intermediate\'',
+                    'output' => ['exiftool executed'],
+                    'returnValue' => 0,
+                ]
+            );
+        self::assertFalse($this->exiftoolAndQpdfCleaner->cleanupFile($file));
+        self::assertFileNotExists($this->fixturesFolder.'/testPath_intermediate');
+    }
+
+    /**
+     * @test
+     */
+    public function cleanupFileIfQpdfFails()
+    {
+        touch($this->fixturesFolder.'/testPath_intermediate');
+        touch($this->fixturesFolder.'/qpdf_failure');
+        $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
+        $file
+            ->expects(self::any())
+            ->method('getForLocalProcessing')
+            ->with(false)
+            ->willReturn($this->fixturesFolder.'/testPathSymlink');
+        $this->logger
+            ->expects(self::once())
+            ->method('info')
+            ->with(
+                'exec',
+                [
+                    'cmd' => $this->fixturesFolder.'/exiftool -all:all= \''.$this->fixturesFolder.'/testPath\' -o \''.$this->fixturesFolder.'/testPath_intermediate\'',
+                    'output' => ['exiftool executed'],
+                    'returnValue' => 0,
+                ]
+            );
+        $this->logger
+            ->expects(self::once())
+            ->method('warning')
+            ->with(
+                'exec',
+                [
+                    'cmd' => $this->fixturesFolder.'/qpdf --linearize \''.$this->fixturesFolder.'/testPath_intermediate\' \''.$this->fixturesFolder.'/testPath\'',
+                    'output' => ['qpdf executed'],
+                    'returnValue' => 123,
+                ]
+            );
+
+        self::assertFalse($this->exiftoolAndQpdfCleaner->cleanupFile($file));
         self::assertFileNotExists($this->fixturesFolder.'/testPath_intermediate');
     }
 

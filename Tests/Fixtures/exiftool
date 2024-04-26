@@ -2,4 +2,4 @@
 <?php
 
 echo 'exiftool executed';
-exit(123);
+exit(file_exists(dirname(__FILE__).'/exiftool_failure') ? 123 : 0);

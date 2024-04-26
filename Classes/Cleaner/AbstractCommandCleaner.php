@@ -60,6 +60,10 @@ abstract class AbstractCommandCleaner implements SingletonInterface, CleanerInte
         $command = CommandUtility::getCommand($command).' '.$parameters;
         $output = $returnValue = '';
         CommandUtility::exec($command, $output, $returnValue);
+        if ($returnValue) {
+            $this->logger->warning('exec', ['cmd' => $command, 'output' => $output, 'returnValue' => $returnValue]);
+            return false;
+        }
         $this->logger->info('exec', ['cmd' => $command, 'output' => $output, 'returnValue' => $returnValue]);
 
         return true;

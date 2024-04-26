@@ -45,13 +45,16 @@ class ExiftoolAndQpdfCleaner extends AbstractCommandCleaner
         $rawFilePathIntermediate = $filePath.'_intermediate';
         $filePath = CommandUtility::escapeShellArgument($filePath);
         $filePathIntermediate = CommandUtility::escapeShellArgument($rawFilePathIntermediate);
-        $this->executeCommand('exiftool', '-all:all= '.$filePath.' -o '.$filePathIntermediate);
-        $this->executeCommand('qpdf', '--linearize '.$filePathIntermediate.' '.$filePath);
-        if (file_exists($rawFilePathIntermediate)) {
+        if (
+            $this->executeCommand('exiftool', '-all:all= '.$filePath.' -o '.$filePathIntermediate)
+            && file_exists($rawFilePathIntermediate)
+        ) {
+            $success = $this->executeCommand('qpdf', '--linearize '.$filePathIntermediate.' '.$filePath);
             unlink($rawFilePathIntermediate);
+            return $success;
         }
 
-        return true;
+        return false;
     }
 
     public function canHandleFile(FileInterface $file): bool
