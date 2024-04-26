@@ -51,6 +51,7 @@ class ExiftoolAndQpdfCleaner extends AbstractCommandCleaner
         ) {
             $success = $this->executeCommand('qpdf', '--linearize '.$filePathIntermediate.' '.$filePath);
             unlink($rawFilePathIntermediate);
+
             return $success;
         }
 

@@ -62,6 +62,7 @@ abstract class AbstractCommandCleaner implements SingletonInterface, CleanerInte
         CommandUtility::exec($command, $output, $returnValue);
         if ($returnValue) {
             $this->logger->warning('exec', ['cmd' => $command, 'output' => $output, 'returnValue' => $returnValue]);
+
             return false;
         }
         $this->logger->info('exec', ['cmd' => $command, 'output' => $output, 'returnValue' => $returnValue]);
