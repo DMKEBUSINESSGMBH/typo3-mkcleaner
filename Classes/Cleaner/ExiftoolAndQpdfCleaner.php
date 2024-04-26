@@ -47,7 +47,9 @@ class ExiftoolAndQpdfCleaner extends AbstractCommandCleaner
         $filePathIntermediate = CommandUtility::escapeShellArgument($rawFilePathIntermediate);
         $this->executeCommand('exiftool', '-all:all= '.$filePath.' -o '.$filePathIntermediate);
         $this->executeCommand('qpdf', '--linearize '.$filePathIntermediate.' '.$filePath);
-        unlink($rawFilePathIntermediate);
+        if (file_exists($rawFilePathIntermediate)) {
+            unlink($rawFilePathIntermediate);
+        }
 
         return true;
     }
