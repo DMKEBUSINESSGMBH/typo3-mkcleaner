@@ -27,8 +27,6 @@
 
 namespace DMK\Mkcleaner\Task;
 
-use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
@@ -42,12 +40,13 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class CleanerTaskFieldProvider extends AbstractAdditionalFieldProvider
+class CleanerTaskFieldProvider implements AdditionalFieldProviderInterface
 {
     /**
      * @var Helper
      */
     protected $taskHelper;
+
     /**
      * @todo use DI with newer TYPO3 versions
      */
@@ -55,6 +54,7 @@ class CleanerTaskFieldProvider extends AbstractAdditionalFieldProvider
     {
         $this->taskHelper = $taskHelper ?? GeneralUtility::makeInstance(Helper::class);
     }
+
     /**
      * @param array<string> $taskInfo
      * @param CleanerTask   $task
@@ -64,7 +64,7 @@ class CleanerTaskFieldProvider extends AbstractAdditionalFieldProvider
     public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $parentObject)
     {
         $fieldName = 'foldersToClean';
-        if ('edit' == (string) $parentObject->getCurrentAction()) {
+        if ('edit' == $parentObject->CMD) {
             $taskInfo[$fieldName] = $task->getFoldersToClean();
         }
         $fieldHtml = '<textarea class="form-control" rows="5" cols="50" name="tx_scheduler['.$fieldName.']" id="'
@@ -79,6 +79,7 @@ class CleanerTaskFieldProvider extends AbstractAdditionalFieldProvider
             ],
         ];
     }
+
     /**
      * @param array<string, string> $submittedData
      *
@@ -92,14 +93,18 @@ class CleanerTaskFieldProvider extends AbstractAdditionalFieldProvider
 
             return true;
         } catch (\Exception $e) {
-            $this->addMessage(sprintf(
-                $GLOBALS['LANG']->sL('LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:message.CleanerTask.foldersToClean.invalid'),
-                $e->getMessage()
-            ), AbstractMessage::ERROR);
+            $parentObject->addMessage(
+                sprintf(
+                    $GLOBALS['LANG']->sL('LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:message.CleanerTask.foldersToClean.invalid'),
+                    $e->getMessage()
+                ),
+                FlashMessage::ERROR
+            );
 
             return false;
         }
     }
+
     /**
      * @param array<string, string> $submittedData
      * @param CleanerTask           $task

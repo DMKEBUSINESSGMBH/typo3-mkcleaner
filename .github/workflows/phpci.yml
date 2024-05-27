@@ -20,9 +20,9 @@ jobs:
         strategy:
             matrix:
                 php-version:
-                    - "8.1"
-                    - "8.2"
-                    - "8.3"
+                    - "7.2"
+                    - "7.3"
+                    - "7.4"
 
         steps:
             -
@@ -71,9 +71,9 @@ jobs:
                     - "test:phpmd"
                     - "test:phpstan"
                 php-version:
-                    - "8.1"
-                    - "8.2"
-                    - "8.3"
+                    - "7.2"
+                    - "7.3"
+                    - "7.4"
 
         steps:
             -
@@ -119,9 +119,9 @@ jobs:
             fail-fast: false
             matrix:
                 php-version:
-                    - "8.1"
-                    - "8.2"
-                    - "8.3"
+                    - "7.2"
+                    - "7.3"
+                    - "7.4"
 
         steps:
             -
