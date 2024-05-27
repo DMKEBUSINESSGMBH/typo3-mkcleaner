@@ -1,7 +1,7 @@
 MK Cleaner
 =======
 
-![TYPO3 compatibility](https://img.shields.io/badge/TYPO3-8.7-orange?maxAge=3600&style=flat-square&logo=typo3)
+![TYPO3 compatibility](https://img.shields.io/badge/TYPO3-11.5%20%7C%2012.4-orange?maxAge=3600&style=flat-square&logo=typo3)
 [![Latest Stable Version](https://img.shields.io/packagist/v/dmk/mkcleaner.svg?maxAge=3600&style=flat-square&logo=composer)](https://packagist.org/packages/dmk/mkcleaner)
 [![Total Downloads](https://img.shields.io/packagist/dt/dmk/mkcleaner.svg?maxAge=3600&style=flat-square)](https://packagist.org/packages/dmk/mkcleaner)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/DMKEBUSINESSGMBH/typo3-mkcleaner/.github/workflows/phpci.yml?maxAge=3600&style=flat-square&logo=github-actions)](https://github.com/DMKEBUSINESSGMBH/typo3-mkcleaner/actions?query=workflow%3APHP-CI)

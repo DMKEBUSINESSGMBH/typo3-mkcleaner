@@ -25,7 +25,7 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-defined('TYPO3_MODE') or exit();
+defined('TYPO3') or exit();
 
 if (TYPO3_MODE === 'BE') {
     // Add context sensitive help (csh) to the scheduler module

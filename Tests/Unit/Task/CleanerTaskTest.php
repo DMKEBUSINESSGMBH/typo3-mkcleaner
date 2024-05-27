@@ -27,13 +27,14 @@
 
 namespace DMK\Mkcleaner\Tests\Task;
 
+use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use DMK\Mkcleaner\Service\CleanerService;
 use DMK\Mkcleaner\Task\CleanerTask;
 use DMK\Mkcleaner\Task\Helper;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * Class CleanerTaskTest.
@@ -45,7 +46,7 @@ use TYPO3\CMS\Lang\LanguageService;
 class CleanerTaskTest extends UnitTestCase
 {
     /**
-     * @var CleanerTask|\PHPUnit\Framework\MockObject\MockObject
+     * @var CleanerTask|MockObject
      */
     protected $task;
 
