@@ -30,26 +30,6 @@ if (!defined('TYPO3')) {
 }
 call_user_func(
     function () {
-        $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
-        $signalSlotDispatcher->connect(
-            \TYPO3\CMS\Core\Resource\ResourceStorage::class,
-            \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PostFileAdd,
-            \DMK\Mkcleaner\SignalSlot\ResourceStorage::class,
-            'cleanupFile'
-        );
-        $signalSlotDispatcher->connect(
-            \TYPO3\CMS\Core\Resource\ResourceStorage::class,
-            \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PostFileReplace,
-            \DMK\Mkcleaner\SignalSlot\ResourceStorage::class,
-            'cleanupFile'
-        );
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\DMK\Mkcleaner\Task\CleanerTask::class] = [
-            'extension' => 'mkcleaner',
-            'title' => 'LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanerTask.title',
-            'description' => 'LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanerTask.description',
-            'additionalFields' => \DMK\Mkcleaner\Task\CleanerTaskFieldProvider::class,
-        ];
-
         \DMK\Mkcleaner\Cleaner\Registry::registerCleaner(\DMK\Mkcleaner\Cleaner\Mat2Cleaner::class, 50);
         \DMK\Mkcleaner\Cleaner\Registry::registerCleaner(\DMK\Mkcleaner\Cleaner\ExiftoolAndQpdfCleaner::class, 75);
     }

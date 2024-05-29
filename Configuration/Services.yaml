@@ -1,0 +1,24 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    DMK\Mkcleaner\EventListener\UploadedFileEventListener:
+        tags:
+            - name: event.listener
+              identifier: 'UploadedFileEventListener'
+              method: 'cleanUp'
+              event: TYPO3\CMS\Core\Resource\Event\AfterFileAddedEvent
+
+    DMK\Mkcleaner\Command\CleanerCommand:
+        tags:
+            - name: console.command
+              command: 'dmk:cleanupFolders'
+              description: 'cleanup the metadata for the given Folders'
+
+    DMK\Mkcleaner\Command\Helper:
+        autowire: true
+
+    DMK\Mkcleaner\Service\CleanerService:
+        autowire: true

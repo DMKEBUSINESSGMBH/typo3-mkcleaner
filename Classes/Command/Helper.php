@@ -25,26 +25,35 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mkcleaner\SignalSlot;
+namespace DMK\Mkcleaner\Command;
 
-use DMK\Mkcleaner\Service\CleanerService;
-use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 
 /**
- * Class ResourceStorage.
+ * Class CleanerTaskFieldProvider.
  *
  * @author  Hannes Bochmann
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class ResourceStorage
+class Helper
 {
+    public function __construct(
+        protected ResourceFactory $resourceFactory,
+    ) {}
+
     /**
-     * @return void
+     * @param array $foldersToClean list of combined folder identifiers
+     *
+     * @return Folder[]
      */
-    public function cleanupFile(FileInterface $file)
+    public function getFolderObjectsFromCombinedIdentifiers(array $foldersToClean): array
     {
-        GeneralUtility::makeInstance(CleanerService::class)->cleanupFile($file);
+        $folderObjects = [];
+        foreach ($foldersToClean as $combinedFolderIdentifier) {
+            $folderObjects[] = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($combinedFolderIdentifier);
+        }
+        return $folderObjects;
     }
 }
