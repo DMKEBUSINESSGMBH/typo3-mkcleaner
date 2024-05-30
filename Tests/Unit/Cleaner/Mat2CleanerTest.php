@@ -148,6 +148,7 @@ class Mat2CleanerTest extends UnitTestCase
 
     /**
      * @test
+     *
      * @dataProvider canHandleFileDataProvider
      */
     public function canHandleFileIfSvgFileGiven(string $mimeType, bool $canHandle)

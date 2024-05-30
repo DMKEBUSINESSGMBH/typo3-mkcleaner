@@ -41,7 +41,8 @@ class Helper
 {
     public function __construct(
         protected ResourceFactory $resourceFactory,
-    ) {}
+    ) {
+    }
 
     /**
      * @param array $foldersToClean list of combined folder identifiers
@@ -54,6 +55,7 @@ class Helper
         foreach ($foldersToClean as $combinedFolderIdentifier) {
             $folderObjects[] = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($combinedFolderIdentifier);
         }
+
         return $folderObjects;
     }
 }

@@ -25,11 +25,11 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-defined('TYPO3') or exit();
+defined('TYPO3') or exit;
 
 if (TYPO3_MODE === 'BE') {
     // Add context sensitive help (csh) to the scheduler module
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr(
+    TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr(
         'csh_mkcleaner',
         'EXT:mkcleaner/Resources/Private/Language/locallang_csh.xlf'
     );

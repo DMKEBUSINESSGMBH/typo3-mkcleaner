@@ -27,12 +27,12 @@
 
 namespace DMK\Mkcleaner\Tests\Task;
 
-use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use DMK\Mkcleaner\Service\CleanerService;
 use DMK\Mkcleaner\Task\CleanerTask;
 use DMK\Mkcleaner\Task\Helper;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -76,7 +76,7 @@ class CleanerTaskTest extends UnitTestCase
 
         $this->task->setFoldersToClean('paths');
         self::assertSame(
-            'test'.CRLF.'label'.': '.CRLF.'paths',
+            'test'.CRLF.'label: '.CRLF.'paths',
             $this->task->getAdditionalInformation('test')
         );
     }

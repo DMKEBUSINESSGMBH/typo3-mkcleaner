@@ -45,7 +45,7 @@ class CleanerCommand extends Command
 {
     public function __construct(
         protected CleanerService $cleanerService,
-        protected \DMK\Mkcleaner\Command\Helper $taskHelper
+        protected Helper $taskHelper
     ) {
         parent::__construct();
     }
@@ -68,8 +68,6 @@ class CleanerCommand extends Command
 
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     *
-     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

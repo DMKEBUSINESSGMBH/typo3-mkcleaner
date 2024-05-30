@@ -30,7 +30,7 @@ if (!defined('TYPO3')) {
 }
 call_user_func(
     function () {
-        \DMK\Mkcleaner\Cleaner\Registry::registerCleaner(\DMK\Mkcleaner\Cleaner\Mat2Cleaner::class, 50);
-        \DMK\Mkcleaner\Cleaner\Registry::registerCleaner(\DMK\Mkcleaner\Cleaner\ExiftoolAndQpdfCleaner::class, 75);
+        DMK\Mkcleaner\Cleaner\Registry::registerCleaner(DMK\Mkcleaner\Cleaner\Mat2Cleaner::class, 50);
+        DMK\Mkcleaner\Cleaner\Registry::registerCleaner(DMK\Mkcleaner\Cleaner\ExiftoolAndQpdfCleaner::class, 75);
     }
 );

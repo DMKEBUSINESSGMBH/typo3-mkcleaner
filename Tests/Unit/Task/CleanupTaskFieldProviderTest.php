@@ -27,11 +27,11 @@
 
 namespace DMK\Mkcleaner\Tests\Task;
 
-use TYPO3\CMS\Core\Localization\LanguageService;
 use DMK\Mkcleaner\Task\CleanerTask;
 use DMK\Mkcleaner\Task\CleanerTaskFieldProvider;
 use DMK\Mkcleaner\Task\Helper;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 
 /**
