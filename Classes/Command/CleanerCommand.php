@@ -50,6 +50,9 @@ class CleanerCommand extends Command
         parent::__construct();
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
     protected function configure(): void
     {
         $this
@@ -59,12 +62,14 @@ class CleanerCommand extends Command
             ->addArgument(
                 'foldersToClean',
                 InputArgument::IS_ARRAY | InputArgument::REQUIRED,
-                'Which Folders should be cleaned (separate multiple folders with a space)?',
+                'Which Folders should be cleaned (separate multiple folders with a space)?'
             );
     }
 
     /**
-     * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
