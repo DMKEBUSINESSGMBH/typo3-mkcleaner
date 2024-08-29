@@ -44,6 +44,7 @@ completely. Please take care of having svg files without metadata yourself.
 
 Changelog
 ----------------
+v12.0.0: Compatibility for TYPO3 11.5 and 12.4 only
 v8.0.2: add some error handling
 v8.0.1: resolve symlinks
 v8.0.0: initial release
