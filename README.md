@@ -15,7 +15,7 @@ to security so no sensitive information is leaked.
 This is done with mat2 (https://0xacab.org/jvoisin/mat2), exiftool (https://exiftool.org/) and qpdf (https://github.com/qpdf/qpdf)
 in the moment. You need to install/provide those commands on the server CLI.
 If some command is not available system-wide the path
-can be configured with `$GLOBALS['TYPO3_CONF_VARS']['SYS']['binSetup']` or 
+can be configured with `$GLOBALS['TYPO3_CONF_VARS']['SYS']['binSetup']` or
 `$GLOBALS['TYPO3_CONF_VARS']['SYS']['binPath']`.
 
 Check the logs for errors after uploading files etc.
@@ -31,12 +31,12 @@ A custom cleaner can be added in `ext_localconf.php` like this:
 \DMK\Mkcleaner\Cleaner\Registry::registerCleaner(\Vendor\Package\Cleaner\CustomCleaner::class, 100);
 ```    
 
-Every cleaner needs to implement `DMK\Mkcleaner\Cleaner\CleanerInterface`. Please take a look at the 
+Every cleaner needs to implement `DMK\Mkcleaner\Cleaner\CleanerInterface`. Please take a look at the
 existing cleaners.
 
 Drawbacks
 ----------------
-Please keep in mind that neither of the tools is perfect and might break files or leave metadata present. 
+Please keep in mind that neither of the tools is perfect and might break files or leave metadata present.
 For example pdf files sometimes loose all links or svg files have changed content when mat2 would
 be used.
 Therefore pdf files are cleaned with exiftool and qpdf instead of mat2 and svg files are omitted

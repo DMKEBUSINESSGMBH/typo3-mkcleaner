@@ -62,7 +62,7 @@ class CleanerCommand extends Command
             ->addArgument(
                 'foldersToClean',
                 InputArgument::IS_ARRAY | InputArgument::REQUIRED,
-                'Which Folders should be cleaned (separate multiple folders with a space)?'
+                'Which Folders should be cleaned (combined folder identifiers separated by space for example 1:myfolder/)?'
             );
     }
 
