@@ -10,8 +10,9 @@ MK Cleaner
 What does it do?
 ----------------
 
-This extension cleans files by removing most of the metadata. This is a important step when it comes
-to security so no sensitive information is leaked.
+This extension cleans files by removing most of the metadata according to the BSI 
+guidelines. This is a important step when it comes
+to security so no sensitive information is leaked. 
 This is done with mat2 (https://0xacab.org/jvoisin/mat2), exiftool (https://exiftool.org/) and qpdf (https://github.com/qpdf/qpdf)
 in the moment. You need to install/provide those commands on the server CLI.
 If some command is not available system-wide the path
@@ -44,6 +45,7 @@ completely. Please take care of having svg files without metadata yourself.
 
 Changelog
 ----------------
+v12.0.1: Optimized description
 v12.0.0: Compatibility for TYPO3 11.5 and 12.4 only
 v8.0.2: add some error handling
 v8.0.1: resolve symlinks

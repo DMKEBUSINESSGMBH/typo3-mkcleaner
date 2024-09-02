@@ -27,7 +27,7 @@
 
 $EM_CONF['mkcleaner'] = [
     'title' => 'MK Cleaner',
-    'description' => 'Cleans files by removing any metadata.',
+    'description' => 'Cleans files by removing any metadata with the help of mat2, exiftool and qpdf according to BSI guidelines.',
     'category' => 'be',
     'author' => 'Hannes Bochmann',
     'author_email' => 'dev@dmk-ebusiness.com',
