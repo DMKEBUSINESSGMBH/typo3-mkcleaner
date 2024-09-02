@@ -45,7 +45,7 @@ class CleanerCommand extends Command
 {
     public function __construct(
         protected CleanerService $cleanerService,
-        protected Helper $taskHelper
+        protected Helper $taskHelper,
     ) {
         parent::__construct();
     }

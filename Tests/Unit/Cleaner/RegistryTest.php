@@ -30,7 +30,7 @@ namespace DMK\Mkcleaner\Tests\Cleaner;
 use DMK\Mkcleaner\Cleaner\ExiftoolAndQpdfCleaner;
 use DMK\Mkcleaner\Cleaner\Mat2Cleaner;
 use DMK\Mkcleaner\Cleaner\Registry;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class RegistryTest.
@@ -41,7 +41,9 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class RegistryTest extends UnitTestCase
 {
-    protected function tearDown()
+    protected bool $resetSingletonInstances = true;
+
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -52,7 +54,7 @@ class RegistryTest extends UnitTestCase
     /**
      * @test
      */
-    public function registerAndUnregisterCleaner()
+    public function registerAndUnregisterCleaner(): void
     {
         Registry::registerCleaner(Mat2Cleaner::class, 50);
         Registry::registerCleaner(ExiftoolAndQpdfCleaner::class, 75);
@@ -71,7 +73,7 @@ class RegistryTest extends UnitTestCase
     /**
      * @test
      */
-    public function registerCleanerWithSamePriorityThrowsException()
+    public function registerCleanerWithSamePriorityThrowsException(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Priority 50 for cleaner DMK\Mkcleaner\Cleaner\Mat2Cleaner already in use');
@@ -82,7 +84,7 @@ class RegistryTest extends UnitTestCase
     /**
      * @test
      */
-    public function registerCleanerWithoutCleanerInterfaceThrowsException()
+    public function registerCleanerWithoutCleanerInterfaceThrowsException(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Cleaner stdClass needs to implement DMK\Mkcleaner\Cleaner\CleanerInterface');

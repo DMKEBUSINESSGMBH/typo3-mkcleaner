@@ -33,9 +33,11 @@
 		"phpcompatibility/php-compatibility": "^9.3.5",
 		"phpmd/phpmd": "^2.13",
 		"phpstan/phpstan": "^1.9",
-		"phpstan/extension-installer": "^1.1",
+		"phpstan/extension-installer": "^1.3",
 		"saschaegerer/phpstan-typo3": "^1.8",
-		"nimut/testing-framework": "^6.0"
+		"typo3/testing-framework": "^6.0 | ^7.0",
+		"ssch/typo3-rector": "^2.5",
+		"rector/rector": "^1.0"
 	},
 	"autoload": {
 		"psr-4": {
@@ -84,22 +86,26 @@
 			"[ -e .Build/bin/php-cs-fixer ] || composer update --ansi",
 			".Build/bin/php-cs-fixer fix -v --dry-run --diff  --ansi"
 		],
+		"test:rector": [
+			"[ -e .Build/bin/rector ] || composer update --ansi",
+			".Build/bin/rector process --dry-run"
+		],
 		"test:phpcompatibility": [
-			"@test:phpcompatibility:7.2",
-			"@test:phpcompatibility:7.3",
-			"@test:phpcompatibility:7.4"
+			"@test:phpcompatibility:8.1",
+			"@test:phpcompatibility:8.2",
+			"@test:phpcompatibility:8.3"
 		],
-		"test:phpcompatibility:7.2": [
+		"test:phpcompatibility:8.1": [
 			"[ -e .Build/bin/phpcs ] || composer update",
-			".Build/bin/phpcs --ignore=.Build/*,Resources/Private/PHP/* -p . --standard=.Build/vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 7.2"
+			".Build/bin/phpcs --ignore=.Build/*,Resources/Private/PHP/* -p . --standard=.Build/vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.1"
 		],
-		"test:phpcompatibility:7.3": [
+		"test:phpcompatibility:8.2": [
 			"[ -e .Build/bin/phpcs ] || composer update",
-			".Build/bin/phpcs --ignore=.Build/*,Resources/Private/PHP/* -p . --standard=.Build/vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 7.3"
+			".Build/bin/phpcs --ignore=.Build/*,Resources/Private/PHP/* -p . --standard=.Build/vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.2"
 		],
-		"test:phpcompatibility:7.4": [
+		"test:phpcompatibility:8.3": [
 			"[ -e .Build/bin/phpcs ] || composer update",
-			".Build/bin/phpcs --ignore=.Build/*,Resources/Private/PHP/* -p . --standard=.Build/vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 7.4"
+			".Build/bin/phpcs --ignore=.Build/*,Resources/Private/PHP/* -p . --standard=.Build/vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.3"
 		],
 		"test:phpmd": [
 			"[ -e .Build/bin/phpmd ] || composer update --ansi",
@@ -115,6 +121,7 @@
 		],
 		"test": [
 			"@test:phpcs",
+			"@test:rector",
 			"@test:phpcompatibility",
 			"@test:phpmd",
 			"@test:phpstan",
@@ -124,7 +131,12 @@
 			"[ -e .Build/bin/php-cs-fixer ] || composer update --ansi",
 			".Build/bin/php-cs-fixer fix -v"
 		],
+		"fix:rector": [
+			"[ -e .Build/bin/rector ] || composer update --ansi",
+			".Build/bin/rector process"
+		],
 		"fix": [
+			"@fix:rector",
 			"@fix:phpcs"
 		]
 	}

@@ -29,7 +29,6 @@ namespace DMK\Mkcleaner\EventListener;
 
 use DMK\Mkcleaner\Service\CleanerService;
 use TYPO3\CMS\Core\Resource\Event\AfterFileAddedEvent;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /***************************************************************
  * Copyright notice
@@ -55,16 +54,21 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  ***************************************************************/
 
 /**
- * MKKVS hook for uploaded file (create/delete).
+ * Class UploadedFileEventListener.
  *
- * @author Markus Crasser
+ * @author  Hannes Bochmann
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
 class UploadedFileEventListener
 {
-    public function cleanUp(AfterFileAddedEvent $event): void
+    public function __construct(
+        protected CleanerService $cleanerService,
+    ) {
+    }
+
+    public function cleanUpFile(AfterFileAddedEvent $event): void
     {
-        GeneralUtility::makeInstance(CleanerService::class)->cleanupFile($event->getFile());
+        $this->cleanerService->cleanupFile($event->getFile());
     }
 }

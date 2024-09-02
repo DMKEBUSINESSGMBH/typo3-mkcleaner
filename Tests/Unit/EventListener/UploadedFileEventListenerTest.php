@@ -25,35 +25,43 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mkcleaner\Service;
+namespace DMK\Mkcleaner\Tests\EventListener;
 
-use DMK\Mkcleaner\Cleaner\Registry;
-use TYPO3\CMS\Core\Resource\FileInterface;
+use DMK\Mkcleaner\EventListener\UploadedFileEventListener;
+use DMK\Mkcleaner\Service\CleanerService;
+use TYPO3\CMS\Core\Resource\Event\AfterFileAddedEvent;
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
-use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
- * Class CleanerService.
+ * Class UploadedFileEventListenerTest.
  *
  * @author  Hannes Bochmann
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class CleanerService implements SingletonInterface
+class UploadedFileEventListenerTest extends UnitTestCase
 {
-    public function cleanupFolder(Folder $folder): void
+    /**
+     * @test
+     */
+    public function cleanupFile(): void
     {
-        foreach ($folder->getFiles(0, 0, Folder::FILTER_MODE_USE_OWN_AND_STORAGE_FILTERS, true) as $file) {
-            $this->cleanupFile($file);
-        }
-    }
+        $file = $this->getMockBuilder(File::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $cleanerService = $this->getMockBuilder(CleanerService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $cleanerService
+            ->expects(self::once())
+            ->method('cleanupFile')
+            ->with($file);
 
-    public function cleanupFile(FileInterface $file): void
-    {
-        foreach (Registry::getRegisteredCleaners() as $cleaner) {
-            if ($cleaner->canHandleFile($file)) {
-                $cleaner->cleanupFile($file);
-            }
-        }
+        $event = new AfterFileAddedEvent($file, $this->createMock(Folder::class));
+        $eventListener = new UploadedFileEventListener($cleanerService);
+
+        $eventListener->cleanupFile($event);
     }
 }

@@ -27,13 +27,9 @@
 
 namespace DMK\Mkcleaner\Tests\Cleaner;
 
-use DMK\Mkcleaner\Cleaner\AbstractCommandCleaner;
 use DMK\Mkcleaner\Cleaner\ExiftoolAndQpdfCleaner;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
-use TYPO3\CMS\Core\Log\Logger;
-use TYPO3\CMS\Core\Log\LogManager;
+use DMK\Mkcleaner\Tests\CleanerTestCase;
 use TYPO3\CMS\Core\Resource\File;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class ExiftoolAndQpdfCleanerTest.
@@ -42,66 +38,40 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class ExiftoolAndQpdfCleanerTest extends UnitTestCase
+class ExiftoolAndQpdfCleanerTest extends CleanerTestCase
 {
-    /**
-     * @var Logger
-     */
-    protected $logger;
+    protected ExiftoolAndQpdfCleaner $exiftoolAndQpdfCleaner;
 
-    /**
-     * @var ExiftoolAndQpdfCleaner
-     */
-    protected $exiftoolAndQpdfCleaner;
-
-    /**
-     * @var string
-     */
-    protected $fixturesFolder;
-
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-
-        $this->logger = $this->getMockBuilder(Logger::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logManager = $this->getMockBuilder(LogManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logManager
-            ->expects(self::once())
-            ->method('getLogger')
-            ->with(AbstractCommandCleaner::class)
-            ->willReturn($this->logger);
-        GeneralUtility::setSingletonInstance(LogManager::class, $logManager);
         $this->exiftoolAndQpdfCleaner = new ExiftoolAndQpdfCleaner();
-
-        $this->fixturesFolder = realpath(dirname(__FILE__).'/../../Fixtures');
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['binSetup'] = 'mat2='.$this->fixturesFolder.'/mat2,'.
             'exiftool='.$this->fixturesFolder.'/exiftool,'.
             'qpdf='.$this->fixturesFolder.'/qpdf';
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
-        parent::tearDown();
-
         if (file_exists($this->fixturesFolder.'/exiftool_failure')) {
             unlink($this->fixturesFolder.'/exiftool_failure');
         }
+
         if (file_exists($this->fixturesFolder.'/qpdf_failure')) {
             unlink($this->fixturesFolder.'/qpdf_failure');
         }
+
         if (file_exists($this->fixturesFolder.'/testPath_intermediate')) {
             unlink($this->fixturesFolder.'/testPath_intermediate');
         }
+
+        parent::tearDown();
     }
 
     /**
      * @test
      */
-    public function cleanupFile()
+    public function cleanupFile(): void
     {
         touch($this->fixturesFolder.'/testPath_intermediate');
         $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
@@ -120,7 +90,7 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
                 [
                     'exec',
                     [
-                        'cmd' => $this->fixturesFolder.'/exiftool -all:all= \''.$this->fixturesFolder.'/testPath\' -o \''.$this->fixturesFolder.'/testPath_intermediate\'',
+                        'cmd' => $this->fixturesFolder."/exiftool -all:all= '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
                         'output' => ['exiftool executed'],
                         'returnValue' => 0,
                     ],
@@ -128,20 +98,20 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
                 [
                     'exec',
                     [
-                        'cmd' => $this->fixturesFolder.'/qpdf --linearize \''.$this->fixturesFolder.'/testPath_intermediate\' \''.$this->fixturesFolder.'/testPath\'',
+                        'cmd' => $this->fixturesFolder."/qpdf --linearize '".$this->fixturesFolder."/testPath_intermediate' '".$this->fixturesFolder."/testPath'",
                         'output' => ['qpdf executed'],
                         'returnValue' => 0,
                     ],
                 ]
             );
         self::assertTrue($this->exiftoolAndQpdfCleaner->cleanupFile($file));
-        self::assertFileNotExists($this->fixturesFolder.'/testPath_intermediate');
+        self::assertFileDoesNotExist($this->fixturesFolder.'/testPath_intermediate');
     }
 
     /**
      * @test
      */
-    public function cleanupFileIfExiftoolFails()
+    public function cleanupFileIfExiftoolFails(): void
     {
         touch($this->fixturesFolder.'/testPath_intermediate');
         touch($this->fixturesFolder.'/exiftool_failure');
@@ -160,7 +130,7 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder.'/exiftool -all:all= \''.$this->fixturesFolder.'/testPath\' -o \''.$this->fixturesFolder.'/testPath_intermediate\'',
+                    'cmd' => $this->fixturesFolder."/exiftool -all:all= '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
                     'output' => ['exiftool executed'],
                     'returnValue' => 123,
                 ]
@@ -172,7 +142,7 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
     /**
      * @test
      */
-    public function cleanupFileIfIntermediateFileNotCreated()
+    public function cleanupFileIfIntermediateFileNotCreated(): void
     {
         $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
         $file
@@ -189,19 +159,19 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder.'/exiftool -all:all= \''.$this->fixturesFolder.'/testPath\' -o \''.$this->fixturesFolder.'/testPath_intermediate\'',
+                    'cmd' => $this->fixturesFolder."/exiftool -all:all= '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
                     'output' => ['exiftool executed'],
                     'returnValue' => 0,
                 ]
             );
         self::assertFalse($this->exiftoolAndQpdfCleaner->cleanupFile($file));
-        self::assertFileNotExists($this->fixturesFolder.'/testPath_intermediate');
+        self::assertFileDoesNotExist($this->fixturesFolder.'/testPath_intermediate');
     }
 
     /**
      * @test
      */
-    public function cleanupFileIfQpdfFails()
+    public function cleanupFileIfQpdfFails(): void
     {
         touch($this->fixturesFolder.'/testPath_intermediate');
         touch($this->fixturesFolder.'/qpdf_failure');
@@ -217,7 +187,7 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder.'/exiftool -all:all= \''.$this->fixturesFolder.'/testPath\' -o \''.$this->fixturesFolder.'/testPath_intermediate\'',
+                    'cmd' => $this->fixturesFolder."/exiftool -all:all= '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
                     'output' => ['exiftool executed'],
                     'returnValue' => 0,
                 ]
@@ -228,14 +198,14 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder.'/qpdf --linearize \''.$this->fixturesFolder.'/testPath_intermediate\' \''.$this->fixturesFolder.'/testPath\'',
+                    'cmd' => $this->fixturesFolder."/qpdf --linearize '".$this->fixturesFolder."/testPath_intermediate' '".$this->fixturesFolder."/testPath'",
                     'output' => ['qpdf executed'],
                     'returnValue' => 123,
                 ]
             );
 
         self::assertFalse($this->exiftoolAndQpdfCleaner->cleanupFile($file));
-        self::assertFileNotExists($this->fixturesFolder.'/testPath_intermediate');
+        self::assertFileDoesNotExist($this->fixturesFolder.'/testPath_intermediate');
     }
 
     /**
@@ -243,7 +213,7 @@ class ExiftoolAndQpdfCleanerTest extends UnitTestCase
      *
      * @dataProvider canHandleFileDataProvider
      */
-    public function canHandleFileIfSvgFileGiven(string $mimeType, bool $canHandle)
+    public function canHandleFileIfSvgFileGiven(string $mimeType, bool $canHandle): void
     {
         $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
         $file

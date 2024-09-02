@@ -27,13 +27,9 @@
 
 namespace DMK\Mkcleaner\Tests\Cleaner;
 
-use DMK\Mkcleaner\Cleaner\AbstractCommandCleaner;
 use DMK\Mkcleaner\Cleaner\Mat2Cleaner;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
-use TYPO3\CMS\Core\Log\Logger;
-use TYPO3\CMS\Core\Log\LogManager;
+use DMK\Mkcleaner\Tests\CleanerTestCase;
 use TYPO3\CMS\Core\Resource\File;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Mat2CleanerTest.
@@ -42,57 +38,30 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class Mat2CleanerTest extends UnitTestCase
+class Mat2CleanerTest extends CleanerTestCase
 {
-    /**
-     * @var Logger
-     */
-    protected $logger;
+    protected Mat2Cleaner $mat2Cleaner;
 
-    /**
-     * @var Mat2Cleaner
-     */
-    protected $mat2Cleaner;
-
-    /**
-     * @var string
-     */
-    protected $fixturesFolder;
-
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-
-        $this->logger = $this->getMockBuilder(Logger::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logManager = $this->getMockBuilder(LogManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logManager
-            ->expects(self::once())
-            ->method('getLogger')
-            ->with(AbstractCommandCleaner::class)
-            ->willReturn($this->logger);
-        GeneralUtility::setSingletonInstance(LogManager::class, $logManager);
         $this->mat2Cleaner = new Mat2Cleaner();
-        $this->fixturesFolder = realpath(dirname(__FILE__).'/../../Fixtures');
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['binSetup'] = 'mat2='.$this->fixturesFolder.'/mat2';
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
-        parent::tearDown();
-
         if (file_exists($this->fixturesFolder.'/mat2_failure')) {
             unlink($this->fixturesFolder.'/mat2_failure');
         }
+
+        parent::tearDown();
     }
 
     /**
      * @test
      */
-    public function cleanupFile()
+    public function cleanupFile(): void
     {
         $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
         $file
@@ -109,7 +78,7 @@ class Mat2CleanerTest extends UnitTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder.'/mat2 --inplace --lightweight \''.$this->fixturesFolder.'/testPath\'',
+                    'cmd' => $this->fixturesFolder."/mat2 --inplace --lightweight '".$this->fixturesFolder."/testPath'",
                     'output' => ['mat2 executed'],
                     'returnValue' => 0,
                 ]
@@ -120,7 +89,7 @@ class Mat2CleanerTest extends UnitTestCase
     /**
      * @test
      */
-    public function cleanupFileIfFailure()
+    public function cleanupFileIfFailure(): void
     {
         touch($this->fixturesFolder.'/mat2_failure');
         $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
@@ -138,7 +107,7 @@ class Mat2CleanerTest extends UnitTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder.'/mat2 --inplace --lightweight \''.$this->fixturesFolder.'/testPath\'',
+                    'cmd' => $this->fixturesFolder."/mat2 --inplace --lightweight '".$this->fixturesFolder."/testPath'",
                     'output' => ['mat2 executed'],
                     'returnValue' => 123,
                 ]
@@ -151,7 +120,7 @@ class Mat2CleanerTest extends UnitTestCase
      *
      * @dataProvider canHandleFileDataProvider
      */
-    public function canHandleFileIfSvgFileGiven(string $mimeType, bool $canHandle)
+    public function canHandleFileIfSvgFileGiven(string $mimeType, bool $canHandle): void
     {
         $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
         $file

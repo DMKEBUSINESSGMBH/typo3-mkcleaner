@@ -52,19 +52,21 @@ abstract class AbstractCommandCleaner implements SingletonInterface, CleanerInte
      */
     public function __construct()
     {
-        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(self::class);
     }
 
     protected function executeCommand(string $command, string $parameters): bool
     {
         $command = CommandUtility::getCommand($command).' '.$parameters;
-        $output = $returnValue = '';
+        $output = null;
+        $returnValue = 0;
         CommandUtility::exec($command, $output, $returnValue);
         if ($returnValue) {
             $this->logger->warning('exec', ['cmd' => $command, 'output' => $output, 'returnValue' => $returnValue]);
 
             return false;
         }
+
         $this->logger->info('exec', ['cmd' => $command, 'output' => $output, 'returnValue' => $returnValue]);
 
         return true;

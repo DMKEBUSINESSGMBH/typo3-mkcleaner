@@ -27,65 +27,30 @@
 
 namespace DMK\Mkcleaner\Tests\Task;
 
+use DMK\Mkcleaner\Command\CleanerCommand;
+use DMK\Mkcleaner\Command\Helper;
 use DMK\Mkcleaner\Service\CleanerService;
-use DMK\Mkcleaner\Task\CleanerTask;
-use DMK\Mkcleaner\Task\Helper;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
-use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Resource\Folder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
- * Class CleanerTaskTest.
+ * Class CleanerCommandTest.
  *
  * @author  Hannes Bochmann
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class CleanerTaskTest extends UnitTestCase
+class CleanerCommandTest extends UnitTestCase
 {
     /**
-     * @var CleanerTask|MockObject
-     */
-    protected $task;
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        // We need a mock to disable the constructor
-        $this->task = $this->getMockBuilder(CleanerTask::class)
-            // dummy method
-            ->setMethods(['getTaskUid'])
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    /**
      * @test
      */
-    public function getAdditionalInformation()
+    public function execute(): void
     {
-        $GLOBALS['LANG'] = $this->getAccessibleMock(LanguageService::class, ['sL'], [], '', false);
-        $GLOBALS['LANG']
-            ->expects(self::once())
-            ->method('sL')
-            ->with('LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanerTask.foldersToClean')
-            ->willReturn('label');
-
-        $this->task->setFoldersToClean('paths');
-        self::assertSame(
-            'test'.CRLF.'label: '.CRLF.'paths',
-            $this->task->getAdditionalInformation('test')
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function execute()
-    {
+        $GLOBALS['LANG'] = $this->createMock(LanguageService::class);
         $helper = $this->getMockBuilder(Helper::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -94,9 +59,8 @@ class CleanerTaskTest extends UnitTestCase
         $helper
             ->expects(self::once())
             ->method('getFolderObjectsFromCombinedIdentifiers')
-            ->with('path1'.CRLF.'path2')
+            ->with(['path1', 'path2'])
             ->willReturn([$firstFolder, $secondFolder]);
-        GeneralUtility::addInstance(Helper::class, $helper);
 
         $cleanerService = $this->getMockBuilder(CleanerService::class)
             ->disableOriginalConstructor()
@@ -105,9 +69,11 @@ class CleanerTaskTest extends UnitTestCase
             ->expects(self::exactly(2))
             ->method('cleanupFolder')
             ->withConsecutive([$firstFolder], [$secondFolder]);
-        GeneralUtility::setSingletonInstance(CleanerService::class, $cleanerService);
 
-        $this->task->setFoldersToClean('path1'.CRLF.'path2');
-        self::assertTrue($this->task->execute());
+        $command = $this->getAccessibleMock(CleanerCommand::class, ['run'], [$cleanerService, $helper]);
+        $input = new ArrayInput(['foldersToClean' => ['path1', 'path2']]);
+        $input->bind($command->getDefinition());
+
+        self::assertTrue(0 === $command->_call('execute', $input, $this->createMock(OutputInterface::class)));
     }
 }

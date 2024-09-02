@@ -28,8 +28,9 @@
 if (!defined('TYPO3')) {
     exit('Access denied.');
 }
+
 call_user_func(
-    function () {
+    function (): void {
         DMK\Mkcleaner\Cleaner\Registry::registerCleaner(DMK\Mkcleaner\Cleaner\Mat2Cleaner::class, 50);
         DMK\Mkcleaner\Cleaner\Registry::registerCleaner(DMK\Mkcleaner\Cleaner\ExiftoolAndQpdfCleaner::class, 75);
     }

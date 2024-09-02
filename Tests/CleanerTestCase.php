@@ -25,40 +25,49 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mkcleaner\Tests\SignalSlot;
+namespace DMK\Mkcleaner\Tests;
 
-use DMK\Mkcleaner\Service\CleanerService;
-use DMK\Mkcleaner\SignalSlot\ResourceStorage;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
-use TYPO3\CMS\Core\Resource\File;
+use DMK\Mkcleaner\Cleaner\AbstractCommandCleaner;
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
- * Class ResourceStorageTest.
+ * Class CleanerTestCase.
  *
  * @author  Hannes Bochmann
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class ResourceStorageTest extends UnitTestCase
+abstract class CleanerTestCase extends UnitTestCase
 {
-    /**
-     * @test
-     */
-    public function cleanupFile()
-    {
-        $file = $this->getMockBuilder(File::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $cleanerService = $this->getMockBuilder(CleanerService::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $cleanerService
-            ->expects(self::once())
-            ->method('cleanupFile')
-            ->with($file);
-        GeneralUtility::setSingletonInstance(CleanerService::class, $cleanerService);
+    protected bool $resetSingletonInstances = true;
 
-        GeneralUtility::makeInstance(ResourceStorage::class)->cleanupFile($file);
+    protected Logger $logger;
+
+    protected string $fixturesFolder;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logManager = $this->getMockBuilder(LogManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logManager
+            ->expects(self::once())
+            ->method('getLogger')
+            ->with(AbstractCommandCleaner::class)
+            ->willReturn($this->logger);
+        GeneralUtility::setSingletonInstance(LogManager::class, $logManager);
+        $this->fixturesFolder = realpath(__DIR__.'/Fixtures');
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['binPath'] = '';
+        $GLOBALS['TYPO3_CONF_VARS']['BE']['disable_exec_function'] = false;
+        $GLOBALS['TYPO3_CONF_VARS']['GFX']['processor_path'] = '';
+        defined('LF') ?: define('LF', chr(10));
     }
 }

@@ -31,10 +31,10 @@ use DMK\Mkcleaner\Cleaner\ExiftoolAndQpdfCleaner;
 use DMK\Mkcleaner\Cleaner\Mat2Cleaner;
 use DMK\Mkcleaner\Cleaner\Registry;
 use DMK\Mkcleaner\Service\CleanerService;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class Mat2ServiceTest.
@@ -45,7 +45,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class CleanerServiceTest extends UnitTestCase
 {
-    protected function tearDown()
+    protected bool $resetSingletonInstances = true;
+
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -56,7 +58,7 @@ class CleanerServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function cleanupFile()
+    public function cleanupFile(): void
     {
         $file = $this->getMockBuilder(File::class)
             ->disableOriginalConstructor()
@@ -98,7 +100,7 @@ class CleanerServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function cleanupFolder()
+    public function cleanupFolder(): void
     {
         $firstFile = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
         $secondFile = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();

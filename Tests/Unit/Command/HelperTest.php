@@ -25,11 +25,11 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mkcleaner\Tests\Task;
+namespace DMK\Mkcleaner\Tests\Command;
 
-use DMK\Mkcleaner\Task\Helper;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use DMK\Mkcleaner\Command\Helper;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class HelperTest.
@@ -43,7 +43,7 @@ class HelperTest extends UnitTestCase
     /**
      * @test
      */
-    public function getFolderObjectsFromCombinedIdentifiers()
+    public function getFolderObjectsFromCombinedIdentifiers(): void
     {
         $resourceFactory = $this->getMockBuilder(ResourceFactory::class)
             ->disableOriginalConstructor()
@@ -56,7 +56,7 @@ class HelperTest extends UnitTestCase
             ->withConsecutive(['first'], ['second'])
             ->willReturnOnConsecutiveCalls($firstFolder, $secondFolder);
 
-        $folders = (new Helper($resourceFactory))->getFolderObjectsFromCombinedIdentifiers('first'.CRLF.'second');
+        $folders = (new Helper($resourceFactory))->getFolderObjectsFromCombinedIdentifiers(['first', 'second']);
         self::assertCount(2, $folders);
         self::assertSame($firstFolder, $folders[0]);
         self::assertSame($secondFolder, $folders[1]);

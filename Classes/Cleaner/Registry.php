@@ -43,10 +43,7 @@ class Registry
      */
     protected static $registeredCleaners = [];
 
-    /**
-     * @return void
-     */
-    public static function registerCleaner(string $className, int $priority)
+    public static function registerCleaner(string $className, int $priority): void
     {
         if (isset(self::$registeredCleaners[$priority])) {
             throw new \Exception('Priority '.$priority.' for cleaner '.$className.' already in use');
@@ -62,10 +59,7 @@ class Registry
         asort(self::$registeredCleaners);
     }
 
-    /**
-     * @return void
-     */
-    public static function unregisterCleaner(string $className)
+    public static function unregisterCleaner(string $className): void
     {
         foreach (self::$registeredCleaners as $priority => $cleaner) {
             if ($cleaner instanceof $className) {
