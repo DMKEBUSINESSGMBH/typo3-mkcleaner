@@ -46,7 +46,7 @@ class ExiftoolAndQpdfCleaner extends AbstractCommandCleaner
         $filePath = CommandUtility::escapeShellArgument($filePath);
         $filePathIntermediate = CommandUtility::escapeShellArgument($rawFilePathIntermediate);
         if (
-            $this->executeCommand('exiftool', '-all:all= '.$filePath.' -o '.$filePathIntermediate)
+            $this->executeCommand('exiftool', '-all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject '.$filePath.' -o '.$filePathIntermediate)
             && file_exists($rawFilePathIntermediate)
         ) {
             $success = $this->executeCommand('qpdf', '--linearize '.$filePathIntermediate.' '.$filePath);
