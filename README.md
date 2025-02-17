@@ -1,5 +1,4 @@
-MK Cleaner
-=======
+![](Resources/Public/Icons/ExtensionLogo.svg)
 
 ![TYPO3 compatibility](https://img.shields.io/badge/TYPO3-11.5%20%7C%2012.4-orange?maxAge=3600&style=flat-square&logo=typo3)
 [![Latest Stable Version](https://img.shields.io/packagist/v/dmk/mkcleaner.svg?maxAge=3600&style=flat-square&logo=composer)](https://packagist.org/packages/dmk/mkcleaner)
