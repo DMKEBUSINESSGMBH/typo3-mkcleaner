@@ -90,7 +90,7 @@ class ExiftoolAndQpdfCleanerTest extends CleanerTestCase
                 [
                     'exec',
                     [
-                        'cmd' => $this->fixturesFolder."/exiftool -all:all= '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
+                        'cmd' => $this->fixturesFolder."/exiftool -all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
                         'output' => ['exiftool executed'],
                         'returnValue' => 0,
                     ],
@@ -130,7 +130,7 @@ class ExiftoolAndQpdfCleanerTest extends CleanerTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder."/exiftool -all:all= '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
+                    'cmd' => $this->fixturesFolder."/exiftool -all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
                     'output' => ['exiftool executed'],
                     'returnValue' => 123,
                 ]
@@ -159,7 +159,7 @@ class ExiftoolAndQpdfCleanerTest extends CleanerTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder."/exiftool -all:all= '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
+                    'cmd' => $this->fixturesFolder."/exiftool -all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
                     'output' => ['exiftool executed'],
                     'returnValue' => 0,
                 ]
@@ -187,7 +187,7 @@ class ExiftoolAndQpdfCleanerTest extends CleanerTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder."/exiftool -all:all= '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
+                    'cmd' => $this->fixturesFolder."/exiftool -all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
                     'output' => ['exiftool executed'],
                     'returnValue' => 0,
                 ]
