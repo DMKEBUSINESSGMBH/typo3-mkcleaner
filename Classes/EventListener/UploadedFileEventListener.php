@@ -29,6 +29,7 @@ namespace DMK\Mkcleaner\EventListener;
 
 use DMK\Mkcleaner\Service\CleanerService;
 use TYPO3\CMS\Core\Resource\Event\AfterFileAddedEvent;
+use TYPO3\CMS\Core\Resource\Event\AfterFileReplacedEvent;
 
 /***************************************************************
  * Copyright notice
@@ -67,7 +68,7 @@ class UploadedFileEventListener
     ) {
     }
 
-    public function cleanUpFile(AfterFileAddedEvent $event): void
+    public function cleanUpFile(AfterFileAddedEvent|AfterFileReplacedEvent $event): void
     {
         $this->cleanerService->cleanupFile($event->getFile());
     }

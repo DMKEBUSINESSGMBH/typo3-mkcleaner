@@ -30,6 +30,7 @@ namespace DMK\Mkcleaner\Tests\EventListener;
 use DMK\Mkcleaner\EventListener\UploadedFileEventListener;
 use DMK\Mkcleaner\Service\CleanerService;
 use TYPO3\CMS\Core\Resource\Event\AfterFileAddedEvent;
+use TYPO3\CMS\Core\Resource\Event\AfterFileReplacedEvent;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -46,7 +47,7 @@ class UploadedFileEventListenerTest extends UnitTestCase
     /**
      * @test
      */
-    public function cleanupFile(): void
+    public function cleanUpAddedFile(): void
     {
         $file = $this->getMockBuilder(File::class)
             ->disableOriginalConstructor()
@@ -56,12 +57,34 @@ class UploadedFileEventListenerTest extends UnitTestCase
             ->getMock();
         $cleanerService
             ->expects(self::once())
-            ->method('cleanupFile')
+            ->method('cleanUpFile')
             ->with($file);
 
         $event = new AfterFileAddedEvent($file, $this->createMock(Folder::class));
         $eventListener = new UploadedFileEventListener($cleanerService);
 
-        $eventListener->cleanupFile($event);
+        $eventListener->cleanUpFile($event);
+    }
+
+    /**
+     * @test
+     */
+    public function cleanUpReplacedFile(): void
+    {
+        $file = $this->getMockBuilder(File::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $cleanerService = $this->getMockBuilder(CleanerService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $cleanerService
+            ->expects(self::once())
+            ->method('cleanUpFile')
+            ->with($file);
+
+        $event = new AfterFileReplacedEvent($file, '');
+        $eventListener = new UploadedFileEventListener($cleanerService);
+
+        $eventListener->cleanUpFile($event);
     }
 }
