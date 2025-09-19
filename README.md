@@ -1,5 +1,4 @@
-MK Cleaner
-=======
+![](Resources/Public/Icons/ExtensionLogo.svg)
 
 ![TYPO3 compatibility](https://img.shields.io/badge/TYPO3-11.5%20%7C%2012.4-orange?maxAge=3600&style=flat-square&logo=typo3)
 [![Latest Stable Version](https://img.shields.io/packagist/v/dmk/mkcleaner.svg?maxAge=3600&style=flat-square&logo=composer)](https://packagist.org/packages/dmk/mkcleaner)
@@ -45,6 +44,7 @@ completely. Please take care of having svg files without metadata yourself.
 
 Changelog
 ----------------
+v13.0.0: Compatibility for TYPO3 12.4 and 13.4 only. Clean up is now done as well when files are replaced 
 v12.0.1: Optimized description
 v12.0.0: Compatibility for TYPO3 11.5 and 12.4 only
 v8.0.2: add some error handling

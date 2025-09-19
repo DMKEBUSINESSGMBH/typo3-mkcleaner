@@ -6,3 +6,4 @@ parameters:
         - %currentWorkingDirectory%/Classes
         - %currentWorkingDirectory%/ext_localconf.php
         - %currentWorkingDirectory%/ext_emconf.php
+    reportUnmatchedIgnoredErrors: true

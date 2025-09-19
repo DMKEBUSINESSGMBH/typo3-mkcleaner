@@ -7,9 +7,14 @@ services:
     DMK\Mkcleaner\EventListener\UploadedFileEventListener:
         tags:
             - name: event.listener
-              identifier: 'UploadedFileEventListener'
+              identifier: 'AddFileEventListener'
               method: 'cleanUpFile'
               event: TYPO3\CMS\Core\Resource\Event\AfterFileAddedEvent
+            - name: event.listener
+              identifier: 'ReplacedFileEventListener'
+              method: 'cleanUpFile'
+              event: TYPO3\CMS\Core\Resource\Event\AfterFileReplacedEvent
+
 
     DMK\Mkcleaner\Command\CleanerCommand:
         tags:

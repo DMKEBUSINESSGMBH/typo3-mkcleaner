@@ -30,6 +30,7 @@ namespace DMK\Mkcleaner\Tests\Cleaner;
 use DMK\Mkcleaner\Cleaner\ExiftoolAndQpdfCleaner;
 use DMK\Mkcleaner\Cleaner\Mat2Cleaner;
 use DMK\Mkcleaner\Cleaner\Registry;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -51,9 +52,7 @@ class RegistryTest extends UnitTestCase
         Registry::unregisterCleaner(ExiftoolAndQpdfCleaner::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function registerAndUnregisterCleaner(): void
     {
         Registry::registerCleaner(Mat2Cleaner::class, 50);
@@ -70,9 +69,7 @@ class RegistryTest extends UnitTestCase
         self::assertInstanceOf(Mat2Cleaner::class, current($registeredCleaners));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function registerCleanerWithSamePriorityThrowsException(): void
     {
         $this->expectException(\Exception::class);
@@ -81,9 +78,7 @@ class RegistryTest extends UnitTestCase
         Registry::registerCleaner(Mat2Cleaner::class, 50);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function registerCleanerWithoutCleanerInterfaceThrowsException(): void
     {
         $this->expectException(\Exception::class);

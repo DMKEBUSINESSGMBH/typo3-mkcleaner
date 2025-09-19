@@ -31,6 +31,7 @@ use DMK\Mkcleaner\Cleaner\ExiftoolAndQpdfCleaner;
 use DMK\Mkcleaner\Cleaner\Mat2Cleaner;
 use DMK\Mkcleaner\Cleaner\Registry;
 use DMK\Mkcleaner\Service\CleanerService;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -55,9 +56,7 @@ class CleanerServiceTest extends UnitTestCase
         Registry::unregisterCleaner(ExiftoolAndQpdfCleaner::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cleanupFile(): void
     {
         $file = $this->getMockBuilder(File::class)
@@ -97,9 +96,7 @@ class CleanerServiceTest extends UnitTestCase
         (new CleanerService())->cleanupFile($file);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cleanupFolder(): void
     {
         $firstFile = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
@@ -118,10 +115,23 @@ class CleanerServiceTest extends UnitTestCase
         $exiftoolAndQpdfCleaner = $this->getMockBuilder(ExiftoolAndQpdfCleaner::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $matcher = $this->exactly(2);
         $exiftoolAndQpdfCleaner
-            ->expects(self::exactly(2))
+            ->expects($matcher)
             ->method('canHandleFile')
-            ->withConsecutive([$firstFile], [$secondFile])
+            ->with(
+                $this->callback(function (File $file) use ($matcher, $firstFile, $secondFile): bool {
+                    self::assertSame(
+                        match ($matcher->numberOfInvocations()) {
+                            1 => $firstFile,
+                            2 => $secondFile,
+                        },
+                        $file
+                    );
+
+                    return true;
+                }),
+            )
             ->willReturnOnConsecutiveCalls(true, false);
         $exiftoolAndQpdfCleaner
             ->expects(self::once())

@@ -49,6 +49,6 @@ class Mat2Cleaner extends AbstractCommandCleaner
 
     public function canHandleFile(FileInterface $file): bool
     {
-        return 'image/svg+xml' != $file->getMimeType() && 'application/pdf' != $file->getMimeType();
+        return 'image/svg+xml' !== $file->getMimeType() && 'application/pdf' !== $file->getMimeType();
     }
 }

@@ -29,7 +29,6 @@ declare(strict_types=1);
 
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\Config\RectorConfig;
-use Rector\PostRector\Rector\NameImportingPostRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\ValueObject\PhpVersion;
@@ -44,25 +43,24 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->phpVersion(PhpVersion::PHP_81);
 
     $rectorConfig->sets([
-        LevelSetList::UP_TO_PHP_83,
+        LevelSetList::UP_TO_PHP_84,
         SetList::CODE_QUALITY,
         SetList::CODING_STYLE,
         SetList::DEAD_CODE,
         SetList::STRICT_BOOLEANS,
-        SetList::PHP_82,
         SetList::PRIVATIZATION,
         SetList::TYPE_DECLARATION,
         SetList::EARLY_RETURN,
         SetList::INSTANCEOF,
-        Typo3LevelSetList::UP_TO_TYPO3_11,
+        Typo3LevelSetList::UP_TO_TYPO3_13,
     ]);
 
     $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
     $rectorConfig->ruleWithConfiguration(
         ExtEmConfRector::class,
         [
-            ExtEmConfRector::PHP_VERSION_CONSTRAINT => '8.1.0-8.3.99',
-            ExtEmConfRector::TYPO3_VERSION_CONSTRAINT => '11.5.0-12.4.99',
+            ExtEmConfRector::PHP_VERSION_CONSTRAINT => '8.1.0-8.4.99',
+            ExtEmConfRector::TYPO3_VERSION_CONSTRAINT => '12.4.0-13.4.99',
             ExtEmConfRector::ADDITIONAL_VALUES_TO_BE_REMOVED => [],
         ]
     );
@@ -70,15 +68,4 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->phpstanConfig(Typo3Option::PHPSTAN_FOR_RECTOR_PATH);
     $rectorConfig->phpstanConfig(__DIR__.'/phpstan.neon');
-
-    $rectorConfig->skip([
-        // no namespace imports for these files:
-        NameImportingPostRector::class => [
-            'ext_localconf.php',
-            'ext_tables.php',
-            'ClassAliasMap.php',
-            __DIR__.'/Configuration/*.php',
-            __DIR__.'/Configuration/**/*.php',
-        ],
-    ]);
 };

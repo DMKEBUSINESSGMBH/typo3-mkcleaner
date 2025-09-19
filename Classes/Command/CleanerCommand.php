@@ -51,7 +51,7 @@ class CleanerCommand extends Command
     }
 
     /**
-     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings("PHPMD.Superglobals")
      */
     protected function configure(): void
     {
@@ -67,7 +67,7 @@ class CleanerCommand extends Command
     }
 
     /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

@@ -30,6 +30,7 @@ namespace DMK\Mkcleaner\Tests\Task;
 use DMK\Mkcleaner\Command\CleanerCommand;
 use DMK\Mkcleaner\Command\Helper;
 use DMK\Mkcleaner\Service\CleanerService;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Localization\LanguageService;
@@ -45,9 +46,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class CleanerCommandTest extends UnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function execute(): void
     {
         $GLOBALS['LANG'] = $this->createMock(LanguageService::class);
@@ -65,10 +64,24 @@ class CleanerCommandTest extends UnitTestCase
         $cleanerService = $this->getMockBuilder(CleanerService::class)
             ->disableOriginalConstructor()
             ->getMock();
+
+        $matcher = $this->exactly(2);
         $cleanerService
-            ->expects(self::exactly(2))
+            ->expects($matcher)
             ->method('cleanupFolder')
-            ->withConsecutive([$firstFolder], [$secondFolder]);
+            ->with(
+                $this->callback(function (Folder $folder) use ($matcher, $firstFolder, $secondFolder): bool {
+                    self::assertSame(
+                        match ($matcher->numberOfInvocations()) {
+                            1 => $firstFolder,
+                            2 => $secondFolder,
+                        },
+                        $folder
+                    );
+
+                    return true;
+                }),
+            );
 
         $command = $this->getAccessibleMock(CleanerCommand::class, ['run'], [$cleanerService, $helper]);
         $input = new ArrayInput(['foldersToClean' => ['path1', 'path2']]);

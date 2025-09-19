@@ -44,7 +44,7 @@ abstract class CleanerTestCase extends UnitTestCase
 {
     protected bool $resetSingletonInstances = true;
 
-    protected Logger $logger;
+    protected \PHPUnit\Framework\MockObject\MockObject $logger;
 
     protected string $fixturesFolder;
 

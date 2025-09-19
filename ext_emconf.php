@@ -32,11 +32,11 @@ $EM_CONF['mkcleaner'] = [
     'author' => 'Hannes Bochmann',
     'author_email' => 'dev@dmk-ebusiness.com',
     'author_company' => 'DMK E-BUSINESS GmbH',
-    'version' => '12.0.1',
+    'version' => '13.0.0',
     'state' => 'stable',
     'constraints' => [
         'depends' => [
-            'typo3' => '11.5.0-12.4.99',
+            'typo3' => '12.4.0-13.4.99',
         ],
         'conflicts' => [
         ],

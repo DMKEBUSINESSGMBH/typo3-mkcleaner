@@ -29,6 +29,8 @@ namespace DMK\Mkcleaner\Tests\Cleaner;
 
 use DMK\Mkcleaner\Cleaner\Mat2Cleaner;
 use DMK\Mkcleaner\Tests\CleanerTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Resource\File;
 
 /**
@@ -58,9 +60,7 @@ class Mat2CleanerTest extends CleanerTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cleanupFile(): void
     {
         $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
@@ -86,9 +86,7 @@ class Mat2CleanerTest extends CleanerTestCase
         self::assertTrue($this->mat2Cleaner->cleanupFile($file));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cleanupFileIfFailure(): void
     {
         touch($this->fixturesFolder.'/mat2_failure');
@@ -115,11 +113,8 @@ class Mat2CleanerTest extends CleanerTestCase
         self::assertFalse($this->mat2Cleaner->cleanupFile($file));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider canHandleFileDataProvider
-     */
+    #[Test]
+    #[DataProvider('canHandleFileDataProvider')]
     public function canHandleFileIfSvgFileGiven(string $mimeType, bool $canHandle): void
     {
         $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
@@ -130,7 +125,7 @@ class Mat2CleanerTest extends CleanerTestCase
         self::assertSame($canHandle, $this->mat2Cleaner->canHandleFile($file));
     }
 
-    public function canHandleFileDataProvider(): array
+    public static function canHandleFileDataProvider(): array
     {
         return [
             ['unknown', true],

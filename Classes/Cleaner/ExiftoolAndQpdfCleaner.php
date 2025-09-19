@@ -60,6 +60,6 @@ class ExiftoolAndQpdfCleaner extends AbstractCommandCleaner
 
     public function canHandleFile(FileInterface $file): bool
     {
-        return 'application/pdf' == $file->getMimeType();
+        return 'application/pdf' === $file->getMimeType();
     }
 }

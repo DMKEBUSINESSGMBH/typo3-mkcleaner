@@ -28,6 +28,7 @@
 namespace DMK\Mkcleaner\Tests\Command;
 
 use DMK\Mkcleaner\Command\Helper;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -40,9 +41,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class HelperTest extends UnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getFolderObjectsFromCombinedIdentifiers(): void
     {
         $resourceFactory = $this->getMockBuilder(ResourceFactory::class)
@@ -50,10 +49,23 @@ class HelperTest extends UnitTestCase
             ->getMock();
         $firstFolder = $this->getMockBuilder(Folder::class)->disableOriginalConstructor()->getMock();
         $secondFolder = $this->getMockBuilder(Folder::class)->disableOriginalConstructor()->getMock();
+        $matcher = $this->exactly(2);
         $resourceFactory
-            ->expects(self::exactly(2))
+            ->expects($matcher)
             ->method('getFolderObjectFromCombinedIdentifier')
-            ->withConsecutive(['first'], ['second'])
+            ->with(
+                $this->callback(function (string $identifier) use ($matcher): bool {
+                    self::assertSame(
+                        match ($matcher->numberOfInvocations()) {
+                            1 => 'first',
+                            2 => 'second',
+                        },
+                        $identifier
+                    );
+
+                    return true;
+                }),
+            )
             ->willReturnOnConsecutiveCalls($firstFolder, $secondFolder);
 
         $folders = (new Helper($resourceFactory))->getFolderObjectsFromCombinedIdentifiers(['first', 'second']);
