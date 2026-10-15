@@ -69,12 +69,12 @@ class CleanerCommandTest extends UnitTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $matcher = $this->exactly(2);
+        $matcher = self::exactly(2);
         $cleanerService
             ->expects($matcher)
             ->method('cleanupFolder')
             ->with(
-                $this->callback(function (Folder $folder) use ($matcher, $firstFolder, $secondFolder): bool {
+                self::callback(function (Folder $folder) use ($matcher, $firstFolder, $secondFolder): bool {
                     self::assertSame(
                         match ($matcher->numberOfInvocations()) {
                             1 => $firstFolder,
@@ -95,6 +95,6 @@ class CleanerCommandTest extends UnitTestCase
         $input = new ArrayInput(['foldersToClean' => ['path1', 'path2']]);
         $input->bind($command->getDefinition());
 
-        self::assertTrue(0 === $command->_call('execute', $input, $this->createMock(OutputInterface::class)));
+        self::assertTrue($command->_call('execute', $input, $this->createMock(OutputInterface::class)) === 0);
     }
 }

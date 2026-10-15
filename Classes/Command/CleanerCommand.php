@@ -43,7 +43,6 @@ use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-
 #[AsCommand(
     name: 'dmk:cleanupFolders',
     description: 'LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanerTask.description',
@@ -72,7 +71,7 @@ final class CleanerCommand extends Command
     protected function translate(string $key): string
     {
         return $this->languageServiceFactory->create('default')->sL(
-            'LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:'.$key
+            'LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:' . $key
         );
     }
 

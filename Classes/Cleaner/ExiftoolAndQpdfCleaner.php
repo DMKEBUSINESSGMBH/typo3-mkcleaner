@@ -42,14 +42,14 @@ class ExiftoolAndQpdfCleaner extends AbstractCommandCleaner
     public function cleanupFile(FileInterface $file): bool
     {
         $filePath = realpath($file->getForLocalProcessing(false));
-        $rawFilePathIntermediate = $filePath.'_intermediate';
+        $rawFilePathIntermediate = $filePath . '_intermediate';
         $filePath = CommandUtility::escapeShellArgument($filePath);
         $filePathIntermediate = CommandUtility::escapeShellArgument($rawFilePathIntermediate);
         if (
-            $this->executeCommand('exiftool', '-all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject '.$filePath.' -o '.$filePathIntermediate)
+            $this->executeCommand('exiftool', '-all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject ' . $filePath . ' -o ' . $filePathIntermediate)
             && file_exists($rawFilePathIntermediate)
         ) {
-            $success = $this->executeCommand('qpdf', '--linearize '.$filePathIntermediate.' '.$filePath);
+            $success = $this->executeCommand('qpdf', '--linearize ' . $filePathIntermediate . ' ' . $filePath);
             unlink($rawFilePathIntermediate);
 
             return $success;
@@ -60,6 +60,6 @@ class ExiftoolAndQpdfCleaner extends AbstractCommandCleaner
 
     public function canHandleFile(FileInterface $file): bool
     {
-        return 'application/pdf' === $file->getMimeType();
+        return $file->getMimeType() === 'application/pdf';
     }
 }

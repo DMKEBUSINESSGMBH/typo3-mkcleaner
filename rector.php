@@ -67,5 +67,5 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(ConvertImplicitVariablesToExplicitGlobalsRector::class);
 
     $rectorConfig->phpstanConfig(Typo3Option::PHPSTAN_FOR_RECTOR_PATH);
-    $rectorConfig->phpstanConfig(__DIR__.'/phpstan.neon');
+    $rectorConfig->phpstanConfig(__DIR__ . '/phpstan.neon');
 };

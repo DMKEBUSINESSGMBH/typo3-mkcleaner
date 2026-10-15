@@ -64,7 +64,7 @@ abstract class CleanerTestCase extends UnitTestCase
             ->with(AbstractCommandCleaner::class)
             ->willReturn($this->logger);
         GeneralUtility::setSingletonInstance(LogManager::class, $logManager);
-        $this->fixturesFolder = realpath(__DIR__.'/Fixtures');
+        $this->fixturesFolder = realpath(__DIR__ . '/Fixtures');
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['binPath'] = '';
         $GLOBALS['TYPO3_CONF_VARS']['BE']['disable_exec_function'] = false;
         $GLOBALS['TYPO3_CONF_VARS']['GFX']['processor_path'] = '';

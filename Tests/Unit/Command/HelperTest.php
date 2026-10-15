@@ -49,12 +49,12 @@ class HelperTest extends UnitTestCase
             ->getMock();
         $firstFolder = $this->getMockBuilder(Folder::class)->disableOriginalConstructor()->getMock();
         $secondFolder = $this->getMockBuilder(Folder::class)->disableOriginalConstructor()->getMock();
-        $matcher = $this->exactly(2);
+        $matcher = self::exactly(2);
         $resourceFactory
             ->expects($matcher)
             ->method('getFolderObjectFromCombinedIdentifier')
             ->with(
-                $this->callback(function (string $identifier) use ($matcher): bool {
+                self::callback(function (string $identifier) use ($matcher): bool {
                     self::assertSame(
                         match ($matcher->numberOfInvocations()) {
                             1 => 'first',

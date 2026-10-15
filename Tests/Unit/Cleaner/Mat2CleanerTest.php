@@ -48,13 +48,13 @@ class Mat2CleanerTest extends CleanerTestCase
     {
         parent::setUp();
         $this->mat2Cleaner = new Mat2Cleaner();
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['binSetup'] = 'mat2='.$this->fixturesFolder.'/mat2';
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['binSetup'] = 'mat2=' . $this->fixturesFolder . '/mat2';
     }
 
     protected function tearDown(): void
     {
-        if (file_exists($this->fixturesFolder.'/mat2_failure')) {
-            unlink($this->fixturesFolder.'/mat2_failure');
+        if (file_exists($this->fixturesFolder . '/mat2_failure')) {
+            unlink($this->fixturesFolder . '/mat2_failure');
         }
 
         parent::tearDown();
@@ -68,7 +68,7 @@ class Mat2CleanerTest extends CleanerTestCase
             ->expects(self::any())
             ->method('getForLocalProcessing')
             ->with(false)
-            ->willReturn($this->fixturesFolder.'/testPathSymlink');
+            ->willReturn($this->fixturesFolder . '/testPathSymlink');
         $this->logger
             ->expects(self::never())
             ->method('warning');
@@ -78,7 +78,7 @@ class Mat2CleanerTest extends CleanerTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder."/mat2 --inplace --lightweight '".$this->fixturesFolder."/testPath'",
+                    'cmd' => $this->fixturesFolder . "/mat2 --inplace --lightweight '" . $this->fixturesFolder . "/testPath'",
                     'output' => ['mat2 executed'],
                     'returnValue' => 0,
                 ]
@@ -89,13 +89,13 @@ class Mat2CleanerTest extends CleanerTestCase
     #[Test]
     public function cleanupFileIfFailure(): void
     {
-        touch($this->fixturesFolder.'/mat2_failure');
+        touch($this->fixturesFolder . '/mat2_failure');
         $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
         $file
             ->expects(self::any())
             ->method('getForLocalProcessing')
             ->with(false)
-            ->willReturn($this->fixturesFolder.'/testPathSymlink');
+            ->willReturn($this->fixturesFolder . '/testPathSymlink');
         $this->logger
             ->expects(self::never())
             ->method('info');
@@ -105,7 +105,7 @@ class Mat2CleanerTest extends CleanerTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder."/mat2 --inplace --lightweight '".$this->fixturesFolder."/testPath'",
+                    'cmd' => $this->fixturesFolder . "/mat2 --inplace --lightweight '" . $this->fixturesFolder . "/testPath'",
                     'output' => ['mat2 executed'],
                     'returnValue' => 123,
                 ]

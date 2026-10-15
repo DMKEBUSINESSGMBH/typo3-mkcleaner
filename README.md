@@ -9,9 +9,9 @@
 What does it do?
 ----------------
 
-This extension cleans files by removing most of the metadata according to the BSI 
+This extension cleans files by removing most of the metadata according to the BSI
 guidelines. This is a important step when it comes
-to security so no sensitive information is leaked. 
+to security so no sensitive information is leaked.
 This is done with mat2 (https://0xacab.org/jvoisin/mat2), exiftool (https://exiftool.org/) and qpdf (https://github.com/qpdf/qpdf)
 in the moment. You need to install/provide those commands on the server CLI.
 If some command is not available system-wide the path
