@@ -44,7 +44,7 @@ completely. Please take care of having svg files without metadata yourself.
 
 Changelog
 ----------------
-v14.0.0: Compatibility for TYPO3 12.4, 13.4 and 14.3
+v14.0.0: Compatibility for TYPO3 14.3 added (12.4 / 13.4 / 14.3). Console command migrated to #[AsCommand], CLI language handling via LanguageServiceFactory, language files modernization.
 v13.0.0: Compatibility for TYPO3 12.4 and 13.4 only. Clean up is now done as well when files are replaced
 v12.0.1: Optimized description
 v12.0.0: Compatibility for TYPO3 11.5 and 12.4 only
