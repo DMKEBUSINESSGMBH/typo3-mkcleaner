@@ -34,6 +34,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -49,7 +50,10 @@ class CleanerCommandTest extends UnitTestCase
     #[Test]
     public function execute(): void
     {
-        $GLOBALS['LANG'] = $this->createMock(LanguageService::class);
+        $languageServiceFactory = $this->createMock(LanguageServiceFactory::class);
+        $languageServiceFactory
+            ->method('create')
+            ->willReturn($this->createMock(LanguageService::class));
         $helper = $this->getMockBuilder(Helper::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -83,7 +87,11 @@ class CleanerCommandTest extends UnitTestCase
                 }),
             );
 
-        $command = $this->getAccessibleMock(CleanerCommand::class, ['run'], [$cleanerService, $helper]);
+        $command = $this->getAccessibleMock(
+            CleanerCommand::class,
+            ['run'],
+            [$cleanerService, $helper, $languageServiceFactory]
+        );
         $input = new ArrayInput(['foldersToClean' => ['path1', 'path2']]);
         $input->bind($command->getDefinition());
 

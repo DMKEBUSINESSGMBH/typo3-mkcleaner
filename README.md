@@ -29,7 +29,7 @@ Adding a custom cleaner
 A custom cleaner can be added in `ext_localconf.php` like this:
 ```php
 \DMK\Mkcleaner\Cleaner\Registry::registerCleaner(\Vendor\Package\Cleaner\CustomCleaner::class, 100);
-```    
+```
 
 Every cleaner needs to implement `DMK\Mkcleaner\Cleaner\CleanerInterface`. Please take a look at the
 existing cleaners.
@@ -44,7 +44,8 @@ completely. Please take care of having svg files without metadata yourself.
 
 Changelog
 ----------------
-v13.0.0: Compatibility for TYPO3 12.4 and 13.4 only. Clean up is now done as well when files are replaced 
+v14.0.0: Compatibility for TYPO3 12.4, 13.4 and 14.3
+v13.0.0: Compatibility for TYPO3 12.4 and 13.4 only. Clean up is now done as well when files are replaced
 v12.0.1: Optimized description
 v12.0.0: Compatibility for TYPO3 11.5 and 12.4 only
 v8.0.2: add some error handling

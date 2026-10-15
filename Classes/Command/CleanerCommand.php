@@ -28,10 +28,12 @@
 namespace DMK\Mkcleaner\Command;
 
 use DMK\Mkcleaner\Service\CleanerService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 
 /**
  * Class CleanerCommand.
@@ -41,29 +43,37 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @license http://www.gnu.org/licenses/lgpl.html
  *          GNU Lesser General Public License, version 3 or later
  */
-class CleanerCommand extends Command
+
+#[AsCommand(
+    name: 'dmk:cleanupFolders',
+    description: 'LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanerTask.description',
+)]
+final class CleanerCommand extends Command
 {
     public function __construct(
         protected CleanerService $cleanerService,
         protected Helper $taskHelper,
+        protected LanguageServiceFactory $languageServiceFactory,
     ) {
         parent::__construct();
     }
 
-    /**
-     * @SuppressWarnings("PHPMD.Superglobals")
-     */
     protected function configure(): void
     {
         $this
-            ->setHelp(
-                $GLOBALS['LANG']->sL('LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:label.CleanerTask.description')
-            )
+            ->setHelp($this->translate('label.CleanerTask.help'))
             ->addArgument(
                 'foldersToClean',
                 InputArgument::IS_ARRAY | InputArgument::REQUIRED,
-                'Which Folders should be cleaned (combined folder identifiers separated by space for example 1:myfolder/)?'
+                $this->translate('label.CleanerTask.foldersToClean.description')
             );
+    }
+
+    protected function translate(string $key): string
+    {
+        return $this->languageServiceFactory->create('default')->sL(
+            'LLL:EXT:mkcleaner/Resources/Private/Language/locallang.xlf:'.$key
+        );
     }
 
     /**
