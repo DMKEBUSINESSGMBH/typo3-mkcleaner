@@ -27,13 +27,17 @@ declare(strict_types=1);
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
+use DMK\Mkcleaner\Cleaner\ExiftoolAndQpdfCleaner;
+use DMK\Mkcleaner\Cleaner\Mat2Cleaner;
+use DMK\Mkcleaner\Cleaner\Registry;
+
 if (!defined('TYPO3')) {
     exit('Access denied.');
 }
 
 call_user_func(
     function (): void {
-        DMK\Mkcleaner\Cleaner\Registry::registerCleaner(DMK\Mkcleaner\Cleaner\Mat2Cleaner::class, 50);
-        DMK\Mkcleaner\Cleaner\Registry::registerCleaner(DMK\Mkcleaner\Cleaner\ExiftoolAndQpdfCleaner::class, 75);
+        Registry::registerCleaner(Mat2Cleaner::class, 50);
+        Registry::registerCleaner(ExiftoolAndQpdfCleaner::class, 75);
     }
 );

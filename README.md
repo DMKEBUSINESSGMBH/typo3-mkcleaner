@@ -9,9 +9,9 @@
 What does it do?
 ----------------
 
-This extension cleans files by removing most of the metadata according to the BSI 
+This extension cleans files by removing most of the metadata according to the BSI
 guidelines. This is a important step when it comes
-to security so no sensitive information is leaked. 
+to security so no sensitive information is leaked.
 This is done with mat2 (https://0xacab.org/jvoisin/mat2), exiftool (https://exiftool.org/) and qpdf (https://github.com/qpdf/qpdf)
 in the moment. You need to install/provide those commands on the server CLI.
 If some command is not available system-wide the path
@@ -29,7 +29,7 @@ Adding a custom cleaner
 A custom cleaner can be added in `ext_localconf.php` like this:
 ```php
 \DMK\Mkcleaner\Cleaner\Registry::registerCleaner(\Vendor\Package\Cleaner\CustomCleaner::class, 100);
-```    
+```
 
 Every cleaner needs to implement `DMK\Mkcleaner\Cleaner\CleanerInterface`. Please take a look at the
 existing cleaners.
@@ -44,7 +44,8 @@ completely. Please take care of having svg files without metadata yourself.
 
 Changelog
 ----------------
-v13.0.0: Compatibility for TYPO3 12.4 and 13.4 only. Clean up is now done as well when files are replaced 
+v14.0.0: Compatibility for TYPO3 14.3 added (12.4 / 13.4 / 14.3). Console command migrated to #[AsCommand], CLI language handling via LanguageServiceFactory, language files modernization.
+v13.0.0: Compatibility for TYPO3 12.4 and 13.4 only. Clean up is now done as well when files are replaced
 v12.0.1: Optimized description
 v12.0.0: Compatibility for TYPO3 11.5 and 12.4 only
 v8.0.2: add some error handling

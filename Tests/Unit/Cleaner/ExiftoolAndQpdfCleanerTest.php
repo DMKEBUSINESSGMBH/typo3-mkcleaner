@@ -48,23 +48,23 @@ class ExiftoolAndQpdfCleanerTest extends CleanerTestCase
     {
         parent::setUp();
         $this->exiftoolAndQpdfCleaner = new ExiftoolAndQpdfCleaner();
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['binSetup'] = 'mat2='.$this->fixturesFolder.'/mat2,'.
-            'exiftool='.$this->fixturesFolder.'/exiftool,'.
-            'qpdf='.$this->fixturesFolder.'/qpdf';
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['binSetup'] = 'mat2=' . $this->fixturesFolder . '/mat2,' .
+            'exiftool=' . $this->fixturesFolder . '/exiftool,' .
+            'qpdf=' . $this->fixturesFolder . '/qpdf';
     }
 
     protected function tearDown(): void
     {
-        if (file_exists($this->fixturesFolder.'/exiftool_failure')) {
-            unlink($this->fixturesFolder.'/exiftool_failure');
+        if (file_exists($this->fixturesFolder . '/exiftool_failure')) {
+            unlink($this->fixturesFolder . '/exiftool_failure');
         }
 
-        if (file_exists($this->fixturesFolder.'/qpdf_failure')) {
-            unlink($this->fixturesFolder.'/qpdf_failure');
+        if (file_exists($this->fixturesFolder . '/qpdf_failure')) {
+            unlink($this->fixturesFolder . '/qpdf_failure');
         }
 
-        if (file_exists($this->fixturesFolder.'/testPath_intermediate')) {
-            unlink($this->fixturesFolder.'/testPath_intermediate');
+        if (file_exists($this->fixturesFolder . '/testPath_intermediate')) {
+            unlink($this->fixturesFolder . '/testPath_intermediate');
         }
 
         parent::tearDown();
@@ -73,32 +73,32 @@ class ExiftoolAndQpdfCleanerTest extends CleanerTestCase
     #[Test]
     public function cleanupFile(): void
     {
-        touch($this->fixturesFolder.'/testPath_intermediate');
+        touch($this->fixturesFolder . '/testPath_intermediate');
         $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
         $file
             ->expects(self::any())
             ->method('getForLocalProcessing')
             ->with(false)
-            ->willReturn($this->fixturesFolder.'/testPathSymlink');
+            ->willReturn($this->fixturesFolder . '/testPathSymlink');
         $this->logger
             ->expects(self::never())
             ->method('warning');
-        $matcher = $this->exactly(2);
+        $matcher = self::exactly(2);
         $this->logger
             ->expects($matcher)
             ->method('info')
             ->with(
                 'exec',
-                $this->callback(function (array $logData) use ($matcher): bool {
+                self::callback(function (array $logData) use ($matcher): bool {
                     self::assertSame(
                         match ($matcher->numberOfInvocations()) {
                             1 => [
-                                'cmd' => $this->fixturesFolder."/exiftool -all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
+                                'cmd' => $this->fixturesFolder . "/exiftool -all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject '" . $this->fixturesFolder . "/testPath' -o '" . $this->fixturesFolder . "/testPath_intermediate'",
                                 'output' => ['exiftool executed'],
                                 'returnValue' => 0,
                             ],
                             2 => [
-                                'cmd' => $this->fixturesFolder."/qpdf --linearize '".$this->fixturesFolder."/testPath_intermediate' '".$this->fixturesFolder."/testPath'",
+                                'cmd' => $this->fixturesFolder . "/qpdf --linearize '" . $this->fixturesFolder . "/testPath_intermediate' '" . $this->fixturesFolder . "/testPath'",
                                 'output' => ['qpdf executed'],
                                 'returnValue' => 0,
                             ],
@@ -110,20 +110,20 @@ class ExiftoolAndQpdfCleanerTest extends CleanerTestCase
                 }),
             );
         self::assertTrue($this->exiftoolAndQpdfCleaner->cleanupFile($file));
-        self::assertFileDoesNotExist($this->fixturesFolder.'/testPath_intermediate');
+        self::assertFileDoesNotExist($this->fixturesFolder . '/testPath_intermediate');
     }
 
     #[Test]
     public function cleanupFileIfExiftoolFails(): void
     {
-        touch($this->fixturesFolder.'/testPath_intermediate');
-        touch($this->fixturesFolder.'/exiftool_failure');
+        touch($this->fixturesFolder . '/testPath_intermediate');
+        touch($this->fixturesFolder . '/exiftool_failure');
         $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
         $file
             ->expects(self::any())
             ->method('getForLocalProcessing')
             ->with(false)
-            ->willReturn($this->fixturesFolder.'/testPathSymlink');
+            ->willReturn($this->fixturesFolder . '/testPathSymlink');
         $this->logger
             ->expects(self::never())
             ->method('info');
@@ -133,13 +133,13 @@ class ExiftoolAndQpdfCleanerTest extends CleanerTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder."/exiftool -all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
+                    'cmd' => $this->fixturesFolder . "/exiftool -all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject '" . $this->fixturesFolder . "/testPath' -o '" . $this->fixturesFolder . "/testPath_intermediate'",
                     'output' => ['exiftool executed'],
                     'returnValue' => 123,
                 ]
             );
         self::assertFalse($this->exiftoolAndQpdfCleaner->cleanupFile($file));
-        self::assertFileExists($this->fixturesFolder.'/testPath_intermediate');
+        self::assertFileExists($this->fixturesFolder . '/testPath_intermediate');
     }
 
     #[Test]
@@ -150,7 +150,7 @@ class ExiftoolAndQpdfCleanerTest extends CleanerTestCase
             ->expects(self::any())
             ->method('getForLocalProcessing')
             ->with(false)
-            ->willReturn($this->fixturesFolder.'/testPathSymlink');
+            ->willReturn($this->fixturesFolder . '/testPathSymlink');
         $this->logger
             ->expects(self::never())
             ->method('warning');
@@ -160,33 +160,33 @@ class ExiftoolAndQpdfCleanerTest extends CleanerTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder."/exiftool -all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
+                    'cmd' => $this->fixturesFolder . "/exiftool -all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject '" . $this->fixturesFolder . "/testPath' -o '" . $this->fixturesFolder . "/testPath_intermediate'",
                     'output' => ['exiftool executed'],
                     'returnValue' => 0,
                 ]
             );
         self::assertFalse($this->exiftoolAndQpdfCleaner->cleanupFile($file));
-        self::assertFileDoesNotExist($this->fixturesFolder.'/testPath_intermediate');
+        self::assertFileDoesNotExist($this->fixturesFolder . '/testPath_intermediate');
     }
 
     #[Test]
     public function cleanupFileIfQpdfFails(): void
     {
-        touch($this->fixturesFolder.'/testPath_intermediate');
-        touch($this->fixturesFolder.'/qpdf_failure');
+        touch($this->fixturesFolder . '/testPath_intermediate');
+        touch($this->fixturesFolder . '/qpdf_failure');
         $file = $this->getMockBuilder(File::class)->disableOriginalConstructor()->getMock();
         $file
             ->expects(self::any())
             ->method('getForLocalProcessing')
             ->with(false)
-            ->willReturn($this->fixturesFolder.'/testPathSymlink');
+            ->willReturn($this->fixturesFolder . '/testPathSymlink');
         $this->logger
             ->expects(self::once())
             ->method('info')
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder."/exiftool -all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject '".$this->fixturesFolder."/testPath' -o '".$this->fixturesFolder."/testPath_intermediate'",
+                    'cmd' => $this->fixturesFolder . "/exiftool -all:all= -tagsfromfile @ -Title -TaggedPDF -Language -Subject '" . $this->fixturesFolder . "/testPath' -o '" . $this->fixturesFolder . "/testPath_intermediate'",
                     'output' => ['exiftool executed'],
                     'returnValue' => 0,
                 ]
@@ -197,14 +197,14 @@ class ExiftoolAndQpdfCleanerTest extends CleanerTestCase
             ->with(
                 'exec',
                 [
-                    'cmd' => $this->fixturesFolder."/qpdf --linearize '".$this->fixturesFolder."/testPath_intermediate' '".$this->fixturesFolder."/testPath'",
+                    'cmd' => $this->fixturesFolder . "/qpdf --linearize '" . $this->fixturesFolder . "/testPath_intermediate' '" . $this->fixturesFolder . "/testPath'",
                     'output' => ['qpdf executed'],
                     'returnValue' => 123,
                 ]
             );
 
         self::assertFalse($this->exiftoolAndQpdfCleaner->cleanupFile($file));
-        self::assertFileDoesNotExist($this->fixturesFolder.'/testPath_intermediate');
+        self::assertFileDoesNotExist($this->fixturesFolder . '/testPath_intermediate');
     }
 
     #[Test]

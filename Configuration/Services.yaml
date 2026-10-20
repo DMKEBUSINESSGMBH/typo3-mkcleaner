@@ -4,6 +4,9 @@ services:
         autoconfigure: true
         public: true
 
+    DMK\Mkcleaner\:
+      resource: '../Classes/*'
+
     DMK\Mkcleaner\EventListener\UploadedFileEventListener:
         tags:
             - name: event.listener
@@ -14,16 +17,3 @@ services:
               identifier: 'ReplacedFileEventListener'
               method: 'cleanUpFile'
               event: TYPO3\CMS\Core\Resource\Event\AfterFileReplacedEvent
-
-
-    DMK\Mkcleaner\Command\CleanerCommand:
-        tags:
-            - name: console.command
-              command: 'dmk:cleanupFolders'
-              description: 'cleanup the metadata for the given Folders'
-
-    DMK\Mkcleaner\Command\Helper:
-        autowire: true
-
-    DMK\Mkcleaner\Service\CleanerService:
-        autowire: true

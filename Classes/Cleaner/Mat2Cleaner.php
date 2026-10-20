@@ -42,13 +42,14 @@ class Mat2Cleaner extends AbstractCommandCleaner
     public function cleanupFile(FileInterface $file): bool
     {
         return $this->executeCommand(
-            'mat2', '--inplace --lightweight '.
+            'mat2',
+            '--inplace --lightweight ' .
             CommandUtility::escapeShellArgument(realpath($file->getForLocalProcessing(false)))
         );
     }
 
     public function canHandleFile(FileInterface $file): bool
     {
-        return 'image/svg+xml' !== $file->getMimeType() && 'application/pdf' !== $file->getMimeType();
+        return $file->getMimeType() !== 'image/svg+xml' && $file->getMimeType() !== 'application/pdf';
     }
 }

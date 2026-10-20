@@ -46,13 +46,13 @@ class Registry
     public static function registerCleaner(string $className, int $priority): void
     {
         if (isset(self::$registeredCleaners[$priority])) {
-            throw new \Exception('Priority '.$priority.' for cleaner '.$className.' already in use');
+            throw new \Exception('Priority ' . $priority . ' for cleaner ' . $className . ' already in use');
         }
 
         $cleaner = GeneralUtility::makeInstance($className);
 
         if (!$cleaner instanceof CleanerInterface) {
-            throw new \Exception('Cleaner '.$className.' needs to implement '.CleanerInterface::class);
+            throw new \Exception('Cleaner ' . $className . ' needs to implement ' . CleanerInterface::class);
         }
 
         self::$registeredCleaners[$priority] = $cleaner;

@@ -115,12 +115,12 @@ class CleanerServiceTest extends UnitTestCase
         $exiftoolAndQpdfCleaner = $this->getMockBuilder(ExiftoolAndQpdfCleaner::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $matcher = $this->exactly(2);
+        $matcher = self::exactly(2);
         $exiftoolAndQpdfCleaner
             ->expects($matcher)
             ->method('canHandleFile')
             ->with(
-                $this->callback(function (File $file) use ($matcher, $firstFile, $secondFile): bool {
+                self::callback(function (File $file) use ($matcher, $firstFile, $secondFile): bool {
                     self::assertSame(
                         match ($matcher->numberOfInvocations()) {
                             1 => $firstFile,
