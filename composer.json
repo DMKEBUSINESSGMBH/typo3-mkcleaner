@@ -67,8 +67,13 @@
 			"typo3/class-alias-loader": true,
 			"typo3/cms-composer-installers": true,
 			"phpstan/extension-installer": true
-		}
-	},
+		},
+        "policy": {
+            "advisories": {
+                "block": false
+            }
+        }
+    },
 	"extra": {
         "branch-alias" : {
             "dev-13.4": "13.0.x-dev"
